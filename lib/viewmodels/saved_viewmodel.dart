@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import '../models/recipe_model.dart';
+import 'notification_viewmodel.dart';
 
 class SavedViewModel extends ChangeNotifier {
   final List<RecipeModel> _savedRecipes = [];
+  NotificationViewModel? _notificationViewModel;
 
-  // Callback to notify HomeViewModel when save state changes
   VoidCallback? onSaveStateChanged;
 
   List<RecipeModel> get savedRecipes => _savedRecipes;
+
+  void setNotificationViewModel(NotificationViewModel vm) {
+    _notificationViewModel = vm;
+  }
 
   void addRecipe(RecipeModel recipe) {
     if (!_savedRecipes.any((r) => r.id == recipe.id)) {
       recipe.isSaved = true;
       _savedRecipes.add(recipe);
+      // Trigger notification
+      _notificationViewModel?.onRecipeSaved(recipe.name);
       notifyListeners();
       onSaveStateChanged?.call();
     }

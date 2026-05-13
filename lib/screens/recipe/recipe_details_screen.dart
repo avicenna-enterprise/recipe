@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/recipe_model.dart';
@@ -5,7 +6,9 @@ import '../../models/ingredient_model.dart';
 import '../../viewmodels/recipe_detail_viewmodel.dart';
 import '../../viewmodels/saved_viewmodel.dart';
 import '../../viewmodels/home_viewmodel.dart';
+import '../../viewmodels/notification_viewmodel.dart';
 import '../../utils/app_colors.dart';
+import 'reviews_screen.dart';
 
 class RecipeDetailsScreen extends StatelessWidget {
   final RecipeModel recipe;
@@ -43,18 +46,21 @@ class _RecipeDetailsBody extends StatelessWidget {
                     bottomLeft: Radius.circular(24),
                     bottomRight: Radius.circular(24),
                   ),
-                  child: Image.asset(
-                    recipe.image,
-                    height: 260,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      height: 260,
-                      color: const Color(0xFF2D6A4F),
-                      child: const Icon(Icons.restaurant,
-                          color: Colors.white54, size: 60),
-                    ),
-                  ),
+                  child: recipe.image.startsWith('assets/')
+                      ? Image.asset(
+                          recipe.image,
+                          height: 260,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => _errorImage(),
+                        )
+                      : Image.file(
+                          File(recipe.image),
+                          height: 260,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => _errorImage(),
+                        ),
                 ),
 
                 // Top bar — image ke upar overlay
@@ -164,8 +170,9 @@ class _RecipeDetailsBody extends StatelessWidget {
                           final saved = savedVm.isSaved(recipe.id);
                           return GestureDetector(
                             onTap: () {
+                              context.read<HomeViewModel>().toggleSave(recipe.id);
+                              
                               if (saved) {
-                                savedVm.removeRecipe(recipe.id);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Removed from saved'),
@@ -174,9 +181,6 @@ class _RecipeDetailsBody extends StatelessWidget {
                                   ),
                                 );
                               } else {
-                                savedVm.addRecipe(recipe);
-                                // Also update HomeViewModel
-                                context.read<HomeViewModel>().toggleSave(recipe.id);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Recipe saved!'),
@@ -235,11 +239,21 @@ class _RecipeDetailsBody extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        '(${recipe.rating * 1000 ~/ 1}k Reviews)',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textGrey,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    ReviewsScreen(recipeId: recipe.id)),
+                          );
+                        },
+                        child: Text(
+                          '(${recipe.rating * 1000 ~/ 1}k Reviews)',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textGrey,
+                          ),
                         ),
                       ),
                     ],
@@ -250,19 +264,21 @@ class _RecipeDetailsBody extends StatelessWidget {
                   Row(
                     children: [
                       ClipOval(
-                        child: Image.asset(
-                          recipe.authorImage,
-                          width: 42,
-                          height: 42,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
-                            width: 42,
-                            height: 42,
-                            color: AppColors.cardBg,
-                            child: const Icon(Icons.person,
-                                color: AppColors.textGrey),
-                          ),
-                        ),
+                        child: recipe.authorImage.startsWith('assets/')
+                            ? Image.asset(
+                                recipe.authorImage,
+                                width: 42,
+                                height: 42,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => _authorError(),
+                              )
+                            : Image.file(
+                                File(recipe.authorImage),
+                                width: 42,
+                                height: 42,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => _authorError(),
+                              ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -426,6 +442,22 @@ class _RecipeDetailsBody extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _errorImage() {
+    return Container(
+      height: 260,
+      color: const Color(0xFF2D6A4F),
+      child: const Icon(Icons.restaurant, color: Colors.white54, size: 60),
+    );
+  }
+  Widget _authorError() {
+    return Container(
+      width: 42,
+      height: 42,
+      color: AppColors.cardBg,
+      child: const Icon(Icons.person, color: AppColors.textGrey),
     );
   }
 }

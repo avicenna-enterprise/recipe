@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../models/recipe_model.dart';
 import '../../../utils/app_colors.dart';
@@ -15,15 +16,17 @@ class SearchRecipeCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           // ── background image ───────────────────────────────────────
-          Image.asset(
-            recipe.image,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: AppColors.cardBg,
-              child: const Icon(Icons.image_not_supported,
-                  color: AppColors.textGrey),
-            ),
-          ),
+          recipe.image.startsWith('assets/')
+              ? Image.asset(
+                  recipe.image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => _errorImage(),
+                )
+              : Image.file(
+                  File(recipe.image),
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => _errorImage(),
+                ),
 
           // ── dark gradient overlay ──────────────────────────────────
           Container(
@@ -98,6 +101,13 @@ class SearchRecipeCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _errorImage() {
+    return Container(
+      color: AppColors.cardBg,
+      child: const Icon(Icons.image_not_supported, color: AppColors.textGrey),
     );
   }
 }

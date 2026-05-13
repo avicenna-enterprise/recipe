@@ -115,10 +115,13 @@ child: ListView.separated(
 scrollDirection: Axis.horizontal,
 itemCount: vm.newRecipes.length,
 separatorBuilder: (context, index) => const SizedBox(width: 14),
-itemBuilder: (_, index) {
-final recipe = vm.newRecipes[index];
-return NewRecipeCard(recipe: recipe);
-},
+                          itemBuilder: (_, index) {
+                            final recipe = vm.newRecipes[index];
+                            return NewRecipeCard(
+                              recipe: recipe,
+                              onTap: () => openRecipeDetail(context, recipe),
+                            );
+                          },
 ),
 ),
 const SizedBox(height: 20),

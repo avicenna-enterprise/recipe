@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../utils/app_colors.dart';
@@ -151,15 +152,17 @@ class _ExploreCard extends StatelessWidget {
           fit: StackFit.expand,
           children: [
           // Background image
-          Image.asset(
-            recipe.image,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
-              color: const Color(0xFF2D6A4F),
-              child: const Icon(Icons.restaurant,
-                  color: Colors.white54, size: 40),
-            ),
-          ),
+          recipe.image.startsWith('assets/')
+              ? Image.asset(
+                  recipe.image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => _errorPlaceholder(),
+                )
+              : Image.file(
+                  File(recipe.image),
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => _errorPlaceholder(),
+                ),
 
           // Dark gradient overlay
           Container(
@@ -240,6 +243,13 @@ class _ExploreCard extends StatelessWidget {
         ],
         ),
       ),
+    );
+  }
+
+  Widget _errorPlaceholder() {
+    return Container(
+      color: const Color(0xFF2D6A4F),
+      child: const Icon(Icons.restaurant, color: Colors.white54, size: 40),
     );
   }
 }

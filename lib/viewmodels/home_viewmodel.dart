@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/recipe_model.dart';
 import '../models/user_model.dart';
+import '../models/video_model.dart';
 import 'saved_viewmodel.dart';
 
 class HomeViewModel extends ChangeNotifier {
@@ -99,107 +100,10 @@ class HomeViewModel extends ChangeNotifier {
   ];
 
   // ── new recipes ───────────────────────────────────────────────────────────
-  final List<RecipeModel> _newRecipes = [
-    RecipeModel(
-      id: '3',
-      name: 'Polina Special',
-      image: 'assets/images/polina_Tankilevitch.jpeg',
-      rating: 4.5,
-      time: '20 mins',
-      author: 'Chef Sofia',
-      authorImage: 'assets/images/polina_Tankilevitch.jpeg',
-      category: 'Italian',
-      isSaved: false,
-    ),
-    RecipeModel(
-      id: '4',
-      name: 'Chicken Biryani (Quick)',
-      image: 'assets/images/biryani.jpeg',
-      rating: 4.6,
-      time: '35 mins',
-      author: 'Chef Ayesha',
-      authorImage: 'assets/images/biryani.jpeg',
-      category: 'Indian',
-      isSaved: false,
-    ),
-    RecipeModel(
-      id: '7',
-      name: 'Hotpot Street Style',
-      image: 'assets/images/hotpot.jpeg',
-      rating: 4.2,
-      time: '30 mins',
-      author: 'Chef Li',
-      authorImage: 'assets/images/hotpot.jpeg',
-      category: 'Chinese',
-      isSaved: false,
-    ),
-    RecipeModel(
-      id: '8',
-      name: 'Italian Creamy',
-      image: 'assets/images/italian_food.jpeg',
-      rating: 4.4,
-      time: '28 mins',
-      author: 'Chef Marco',
-      authorImage: 'assets/images/italian_food.jpeg',
-      category: 'Italian',
-      isSaved: false,
-    ),
-    RecipeModel(
-      id: '11',
-      name: 'Spice Roasted Chicken',
-      image: 'assets/images/spice_roasted_chicken.jpeg',
-      rating: 4.0,
-      time: '40 mins',
-      author: 'Mark Kelvin',
-      authorImage: 'assets/images/spice_roasted_chicken.jpeg',
-      category: 'Asian',
-      isSaved: false,
-    ),
-    RecipeModel(
-      id: '12',
-      name: 'Steak with Tomato',
-      image: 'assets/images/steak_with_tomatto.jpeg',
-      rating: 4.0,
-      time: '35 mins',
-      author: 'Chef John',
-      authorImage: 'assets/images/steak_with_tomatto.jpeg',
-      category: 'Italian',
-      isSaved: false,
-    ),
-    RecipeModel(
-      id: '13',
-      name: 'Traditional Spare Ribs Baked',
-      image: 'assets/images/Traditional spare.jpeg',
-      rating: 4.0,
-      time: '60 mins',
-      author: 'Chef John',
-      authorImage: 'assets/images/Traditional spare.jpeg',
-      category: 'Asian',
-      isSaved: false,
-    ),
-    RecipeModel(
-      id: '14',
-      name: 'Lamb Chops with Fruity Couscous',
-      image: 'assets/images/Lamb_chops.jpeg',
-      rating: 4.0,
-      time: '45 mins',
-      author: 'Spicy Nelly',
-      authorImage: 'assets/images/Lamb_chops.jpeg',
-      category: 'Italian',
-      isSaved: false,
-    ),
-    RecipeModel(
-      id: '15',
-      name: 'Chinese Style Egg Fried Rice with Sliced',
-      image: 'assets/images/Chinese_style_Egg_fried_rice.jpeg',
-      rating: 4.0,
-      time: '25 mins',
-      author: 'Laura Wilson',
-      authorImage: 'assets/images/Chinese_style_Egg_fried_rice.jpeg',
-      category: 'Chinese',
-      isSaved: false,
-    ),
-  ];
+  final List<RecipeModel> _newRecipes = [];
+
+  // ── user videos ───────────────────────────────────────────────────────────
+  final List<VideoModel> _userVideos = [];
 
   // ── getters ───────────────────────────────────────────────────────────────
   UserModel get user => _user;
@@ -210,6 +114,7 @@ class HomeViewModel extends ChangeNotifier {
   List<RecipeModel> get newRecipes => _applyFilters(_newRecipes);
 
   List<RecipeModel> get allRecipes => [..._featured, ..._newRecipes];
+  List<VideoModel> get userVideos => _userVideos;
 
   List<RecipeModel> get searchResults {
     final q = _searchQuery.trim().toLowerCase();
@@ -266,6 +171,115 @@ class HomeViewModel extends ChangeNotifier {
       }
     }
 
+    notifyListeners();
+  }
+
+  void addRecipe(RecipeModel recipe) {
+    _newRecipes.insert(0, recipe);
+    notifyListeners();
+  }
+
+  void addVideo(VideoModel video) {
+    _userVideos.insert(0, video);
+    notifyListeners();
+  }
+
+  void deleteVideo(String videoId) {
+    final idx = _userVideos.indexWhere((v) => v.id == videoId);
+    if (idx != -1) {
+      _lastDeletedVideo = _userVideos[idx];
+      _lastDeletedVideoIndex = idx;
+      _userVideos.removeAt(idx);
+      notifyListeners();
+    }
+  }
+
+  VideoModel? _lastDeletedVideo;
+  int? _lastDeletedVideoIndex;
+
+  void undoDeleteVideo() {
+    if (_lastDeletedVideo != null && _lastDeletedVideoIndex != null) {
+      _userVideos.insert(_lastDeletedVideoIndex!, _lastDeletedVideo!);
+      _lastDeletedVideo = null;
+      _lastDeletedVideoIndex = null;
+      notifyListeners();
+    }
+  }
+
+  void updateVideo(VideoModel video) {
+    final idx = _userVideos.indexWhere((v) => v.id == video.id);
+    if (idx != -1) {
+      _userVideos[idx] = video;
+      notifyListeners();
+    }
+  }
+
+  RecipeModel? _lastDeletedRecipe;
+  int? _lastDeletedIndex;
+  bool _lastFromFeatured = false;
+
+  List<RecipeModel> get userRecipes {
+    // Return only recipes authored by the current user
+    return allRecipes.where((r) => r.author.contains(_user.name)).toList();
+  }
+
+  void deleteRecipe(String recipeId) {
+    // Find where it was to support undo
+    final fIdx = _featured.indexWhere((r) => r.id == recipeId);
+    if (fIdx != -1) {
+      _lastDeletedRecipe = _featured[fIdx];
+      _lastDeletedIndex = fIdx;
+      _lastFromFeatured = true;
+      _featured.removeAt(fIdx);
+    } else {
+      final nIdx = _newRecipes.indexWhere((r) => r.id == recipeId);
+      if (nIdx != -1) {
+        _lastDeletedRecipe = _newRecipes[nIdx];
+        _lastDeletedIndex = nIdx;
+        _lastFromFeatured = false;
+        _newRecipes.removeAt(nIdx);
+      }
+    }
+
+    if (_savedViewModel != null) {
+      _savedViewModel!.removeRecipe(recipeId);
+    }
+    notifyListeners();
+  }
+
+  void undoDelete() {
+    if (_lastDeletedRecipe == null) return;
+    if (_lastFromFeatured) {
+      _featured.insert(_lastDeletedIndex!, _lastDeletedRecipe!);
+    } else {
+      _newRecipes.insert(_lastDeletedIndex!, _lastDeletedRecipe!);
+    }
+    _lastDeletedRecipe = null;
+    notifyListeners();
+  }
+
+
+  void updateRecipeRating(String recipeId, double newRating) {
+    final fIdx = _featured.indexWhere((r) => r.id == recipeId);
+    if (fIdx != -1) {
+      _featured[fIdx] = _featured[fIdx].copyWithRating(newRating);
+    }
+    final nIdx = _newRecipes.indexWhere((r) => r.id == recipeId);
+    if (nIdx != -1) {
+      _newRecipes[nIdx] = _newRecipes[nIdx].copyWithRating(newRating);
+    }
+    notifyListeners();
+  }
+
+  void updateRecipe(RecipeModel recipe) {
+    final fIdx = _featured.indexWhere((r) => r.id == recipe.id);
+    if (fIdx != -1) {
+      _featured[fIdx] = recipe;
+    }
+    final nIdx = _newRecipes.indexWhere((r) => r.id == recipe.id);
+    if (nIdx != -1) {
+      _newRecipes[nIdx] = recipe;
+    }
     notifyListeners();
   }
 

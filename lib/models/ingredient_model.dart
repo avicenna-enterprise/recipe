@@ -112,6 +112,44 @@ class RecipeIngredients {
     ],
   };
 
+  static String getEmoji(String name) {
+    final n = name.toLowerCase();
+    if (n.contains('chicken') || n.contains('meat') || n.contains('leg') || n.contains('wing')) return '🍗';
+    if (n.contains('rice')) return '🍚';
+    if (n.contains('oil')) return '🫒';
+    if (n.contains('salt')) return '🧂';
+    if (n.contains('sugar')) return '🍬';
+    if (n.contains('pepper')) return '🫙';
+    if (n.contains('tomato')) return '🍅';
+    if (n.contains('onion')) return '🧅';
+    if (n.contains('garlic')) return '🧄';
+    if (n.contains('egg')) return '🥚';
+    if (n.contains('milk') || n.contains('yogurt')) return '🥛';
+    if (n.contains('beef') || n.contains('meat')) return '🥩';
+    if (n.contains('water')) return '💧';
+    if (n.contains('flour')) return '🌾';
+    if (n.contains('butter') || n.contains('ghee')) return '🧈';
+    if (n.contains('chili') || n.contains('spice')) return '🌶️';
+    if (n.contains('pasta') || n.contains('noodle')) return '🍝';
+    return '🍳'; // Default
+  }
+
+  static List<IngredientModel> getSuggestions(String recipeName) {
+    final name = recipeName.toLowerCase();
+    if (name.contains('biryani')) return data['1']!;
+    if (name.contains('hotpot')) return data['2']!;
+    if (name.contains('pasta') || name.contains('polina')) return data['3']!;
+    if (name.contains('grilled') || name.contains('chicken')) return data['5']!;
+    if (name.contains('spaghetti') || name.contains('italian')) return data['6']!;
+    if (name.contains('coleslaw') || name.contains('salad')) return data['9']!;
+    if (name.contains('greek')) return data['10']!;
+    if (name.contains('ribs')) return data['13']!;
+    if (name.contains('lamb')) return data['14']!;
+    if (name.contains('fried rice') || name.contains('chinese')) return data['15']!;
+    
+    return []; // No suggestions found
+  }
+
   static List<IngredientModel> getFor(String recipeId) {
     return data[recipeId] ?? [
       IngredientModel(name: 'Ingredient 1', quantity: '100g', emoji: '🥘'),
