@@ -82,7 +82,7 @@ const SizedBox(height: 20),
 ] else ...[
 // ── featured recipes ────────────────────────────────────
 SizedBox(
-height: 280,
+height: 240,
 child: ListView.separated(
 scrollDirection: Axis.horizontal,
 itemCount: vm.featured.length,

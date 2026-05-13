@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
+  final bool showGap;
   final Function(int) onTap;
 
   const BottomNavBar({
     super.key,
     required this.selectedIndex,
+    this.showGap = true,
     required this.onTap,
   });
 
@@ -36,7 +38,7 @@ class BottomNavBar extends StatelessWidget {
             selectedIndex: selectedIndex,
             onTap: onTap,
           ),
-          const SizedBox(width: 40), // FAB space
+          if (showGap) const SizedBox(width: 40), // FAB space
           _NavItem(
             icon: Icons.notifications_outlined,
             activeIcon: Icons.notifications,

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/recipe_model.dart';
-import '../../models/ingredient_model.dart';
 import '../../viewmodels/recipe_detail_viewmodel.dart';
-import '../../viewmodels/saved_viewmodel.dart';
-import '../../viewmodels/home_viewmodel.dart';
 import '../../utils/app_colors.dart';
+import 'widgets/recipe_hero.dart';
+import 'widgets/author_info.dart';
+import 'widgets/recipe_tabs.dart';
+import 'widgets/ingredient_tile.dart';
+import 'widgets/step_tile.dart';
+import 'widgets/recipe_options_menu.dart';
 
 class RecipeDetailsScreen extends StatelessWidget {
   final RecipeModel recipe;
@@ -24,6 +28,14 @@ class RecipeDetailsScreen extends StatelessWidget {
 class _RecipeDetailsBody extends StatelessWidget {
   const _RecipeDetailsBody();
 
+  Future<void> _launchURL(String? url) async {
+    if (url == null || url.isEmpty) return;
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<RecipeDetailViewModel>();
@@ -33,187 +45,15 @@ class _RecipeDetailsBody extends StatelessWidget {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-          // ── Hero Image ──────────────────────────────────────────────
+          // ── Hero Section (Image + Nav) ───────────────────────────────────
           SliverToBoxAdapter(
-            child: Stack(
-              children: [
-                // Image
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(24),
-                    bottomRight: Radius.circular(24),
-                  ),
-                  child: Image.asset(
-                    recipe.image,
-                    height: 260,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      height: 260,
-                      color: const Color(0xFF2D6A4F),
-                      child: const Icon(Icons.restaurant,
-                          color: Colors.white54, size: 60),
-                    ),
-                  ),
-                ),
-
-                // Top bar — image ke upar overlay
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Back button
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: Container(
-                              width: 38,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.9),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.arrow_back,
-                                  color: AppColors.textDark, size: 20),
-                            ),
-                          ),
-                          // More options
-                          Container(
-                            width: 38,
-                            height: 38,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.9),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(Icons.more_horiz,
-                                color: AppColors.textDark, size: 20),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Rating badge
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF5A623),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.star,
-                            color: Colors.white, size: 13),
-                        const SizedBox(width: 4),
-                        Text(
-                          recipe.rating.toStringAsFixed(1),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Time + bookmark at bottom of image — right side
-                Positioned(
-                  bottom: 14,
-                  right: 16,
-                  child: Row(
-                    children: [
-                      // Time pill
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.access_time,
-                                color: Colors.white, size: 14),
-                            const SizedBox(width: 5),
-                            Text(
-                              recipe.time,
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      // Bookmark button
-                      Consumer<SavedViewModel>(
-                        builder: (context, savedVm, _) {
-                          final saved = savedVm.isSaved(recipe.id);
-                          return GestureDetector(
-                            onTap: () {
-                              if (saved) {
-                                savedVm.removeRecipe(recipe.id);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Removed from saved'),
-                                    duration: Duration(seconds: 1),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                              } else {
-                                savedVm.addRecipe(recipe);
-                                // Also update HomeViewModel
-                                context.read<HomeViewModel>().toggleSave(recipe.id);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Recipe saved!'),
-                                    duration: Duration(seconds: 1),
-                                    backgroundColor: AppColors.primary,
-                                  ),
-                                );
-                              }
-                            },
-                            child: Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                color: saved
-                                    ? AppColors.primary
-                                    : Colors.black.withOpacity(0.5),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                saved
-                                    ? Icons.bookmark
-                                    : Icons.bookmark_border,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            child: RecipeHero(
+              recipe: recipe,
+              onMoreTap: () => showRecipeOptionsMenu(context, recipe),
             ),
           ),
 
-          // ── Content ─────────────────────────────────────────────────
+          // ── Content Info (Title, Author, Tabs) ───────────────────────────
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -228,7 +68,7 @@ class _RecipeDetailsBody extends StatelessWidget {
                         child: Text(
                           recipe.name.replaceAll('\n', ' '),
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: AppColors.textDark,
                           ),
@@ -236,9 +76,9 @@ class _RecipeDetailsBody extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '(${recipe.rating * 1000 ~/ 1}k Reviews)',
+                        '(${recipe.reviewCount ~/ 1000}k Reviews)',
                         style: const TextStyle(
-                          fontSize: 12,
+                          fontSize: 13,
                           color: AppColors.textGrey,
                         ),
                       ),
@@ -246,151 +86,44 @@ class _RecipeDetailsBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  // Author row
-                  Row(
-                    children: [
-                      ClipOval(
-                        child: Image.asset(
-                          recipe.authorImage,
-                          width: 42,
-                          height: 42,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
-                            width: 42,
-                            height: 42,
-                            color: AppColors.cardBg,
-                            child: const Icon(Icons.person,
-                                color: AppColors.textGrey),
-                          ),
+                  // Author Info Section (Extracted Widget)
+                  AuthorInfo(recipe: recipe),
+                  const SizedBox(height: 12),
+
+                  // ── Watch Video Button ───────────────────────────────────
+                  if (recipe.videoUrl != null)
+                    GestureDetector(
+                      onTap: () => _launchURL(recipe.videoUrl),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.red.withOpacity(0.3)),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              recipe.author,
-                              style: const TextStyle(
+                            const Icon(Icons.play_circle_fill,
+                                color: Colors.red, size: 20),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Watch Video',
+                              style: TextStyle(
+                                color: Colors.red,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: AppColors.textDark,
+                                fontSize: 13,
                               ),
                             ),
-                            Row(
-                              children: const [
-                                Icon(Icons.location_on,
-                                    size: 12,
-                                    color: AppColors.primary),
-                                SizedBox(width: 3),
-                                Text(
-                                  'Pakistan',
-                                  style: TextStyle(
-                                      fontSize: 11,
-                                      color: AppColors.textGrey),
-                                ),
-                              ],
-                            ),
                           ],
                         ),
                       ),
-                      // Follow button
-                      GestureDetector(
-                        onTap: () => vm.toggleFollow(),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: vm.isFollowing
-                                ? Colors.grey.shade200
-                                : AppColors.primary,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            vm.isFollowing ? 'Following' : 'Follow',
-                            style: TextStyle(
-                              color: vm.isFollowing
-                                  ? AppColors.textGrey
-                                  : Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
                   const SizedBox(height: 20),
 
-                  // Ingredient / Procedure tabs
-                  Row(
-                    children: [
-                      // Ingredient tab
-                      GestureDetector(
-                        onTap: vm.switchToIngredients,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: vm.showIngredients
-                                ? AppColors.primary
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Text(
-                            'Ingredient',
-                            style: TextStyle(
-                              color: vm.showIngredients
-                                  ? Colors.white
-                                  : AppColors.primary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      // Procedure tab
-                      GestureDetector(
-                        onTap: vm.switchToProcedure,
-                        child: Text(
-                          'Procedure',
-                          style: TextStyle(
-                            color: !vm.showIngredients
-                                ? AppColors.primary
-                                : AppColors.textGrey,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Serve info
-                  if (vm.showIngredients)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: const [
-                            Icon(Icons.person_outline,
-                                size: 16, color: AppColors.textGrey),
-                            SizedBox(width: 5),
-                            Text('1 serve',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: AppColors.textGrey)),
-                          ],
-                        ),
-                        Text(
-                          '${vm.ingredients.length} items',
-                          style: const TextStyle(
-                              fontSize: 12, color: AppColors.textGrey),
-                        ),
-                      ],
-                    ),
+                  // Tabs (Ingredient / Procedure) (Extracted Widget)
+                  const RecipeTabs(),
                   const SizedBox(height: 12),
                 ],
               ),
@@ -405,7 +138,7 @@ class _RecipeDetailsBody extends StatelessWidget {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     final ing = vm.ingredients[index];
-                    return _IngredientTile(ingredient: ing);
+                    return IngredientTile(ingredient: ing);
                   },
                   childCount: vm.ingredients.length,
                 ),
@@ -417,8 +150,7 @@ class _RecipeDetailsBody extends StatelessWidget {
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    return _StepTile(
-                        step: index + 1, text: vm.steps[index]);
+                    return StepTile(step: index + 1, text: vm.steps[index]);
                   },
                   childCount: vm.steps.length,
                 ),
@@ -430,114 +162,3 @@ class _RecipeDetailsBody extends StatelessWidget {
   }
 }
 
-// ── Ingredient Tile ──────────────────────────────────────────────────────
-class _IngredientTile extends StatelessWidget {
-  final IngredientModel ingredient;
-
-  const _IngredientTile({required this.ingredient});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        children: [
-          // Emoji icon
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Text(
-                ingredient.emoji,
-                style: const TextStyle(fontSize: 26),
-              ),
-            ),
-          ),
-          const SizedBox(width: 14),
-          // Name
-          Expanded(
-            child: Text(
-              ingredient.name,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textDark,
-              ),
-            ),
-          ),
-          // Quantity
-          Text(
-            ingredient.quantity,
-            style: const TextStyle(
-              fontSize: 13,
-              color: AppColors.textGrey,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Step Tile ────────────────────────────────────────────────────────────
-class _StepTile extends StatelessWidget {
-  final int step;
-  final String text;
-
-  const _StepTile({required this.step, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 30,
-            height: 30,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                '$step',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: 14,
-                color: AppColors.textDark,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

@@ -40,6 +40,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/biryani.jpeg',
       category: 'Indian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/PIcngQCMOPE?si=EbLP15vd1gDHQ9fr',
     ),
     RecipeModel(
       id: '2',
@@ -51,6 +52,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/hotpot.jpeg',
       category: 'Chinese',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/euBRSSJj3Ho?si=-Dz7ndOEmRs2cQfb',
     ),
     RecipeModel(
       id: '5',
@@ -62,6 +64,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/chicken.jpeg',
       category: 'Asian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/L-rJQVT24Zo?si=nwGzn2AQmsBgwPeZ',
     ),
     RecipeModel(
       id: '6',
@@ -73,6 +76,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/italian_food.jpeg',
       category: 'Italian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/gcXcB_Sl4uw?si=U_rDv4RhEMVBIIf_',
     ),
     RecipeModel(
       id: '9',
@@ -84,6 +88,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/crunchy_nut_coleslaw.jpeg',
       category: 'Asian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/QmDPIGkmdLc?si=ZUFjHr2VnQkadZM6',
     ),
     RecipeModel(
       id: '10',
@@ -95,6 +100,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/classic_greek_salad.jpeg',
       category: 'Italian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/oSn0Y9c99NU?si=4-luEwnh_Nz0x9QD',
     ),
   ];
 
@@ -110,40 +116,11 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/polina_Tankilevitch.jpeg',
       category: 'Italian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/a5_dXfrkHt4?si=kcK9mAa283uW3vHN',
     ),
-    RecipeModel(
-      id: '4',
-      name: 'Chicken Biryani (Quick)',
-      image: 'assets/images/biryani.jpeg',
-      rating: 4.6,
-      time: '35 mins',
-      author: 'Chef Ayesha',
-      authorImage: 'assets/images/biryani.jpeg',
-      category: 'Indian',
-      isSaved: false,
-    ),
-    RecipeModel(
-      id: '7',
-      name: 'Hotpot Street Style',
-      image: 'assets/images/hotpot.jpeg',
-      rating: 4.2,
-      time: '30 mins',
-      author: 'Chef Li',
-      authorImage: 'assets/images/hotpot.jpeg',
-      category: 'Chinese',
-      isSaved: false,
-    ),
-    RecipeModel(
-      id: '8',
-      name: 'Italian Creamy',
-      image: 'assets/images/italian_food.jpeg',
-      rating: 4.4,
-      time: '28 mins',
-      author: 'Chef Marco',
-      authorImage: 'assets/images/italian_food.jpeg',
-      category: 'Italian',
-      isSaved: false,
-    ),
+
+
+
     RecipeModel(
       id: '11',
       name: 'Spice Roasted Chicken',
@@ -154,6 +131,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/spice_roasted_chicken.jpeg',
       category: 'Asian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/827IZsbsZj8?si=mYMxkgQeEF_U0fep',
     ),
     RecipeModel(
       id: '12',
@@ -165,6 +143,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/steak_with_tomatto.jpeg',
       category: 'Italian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/vKh2ym0XLTY?si=nzCnIGUkeusdyCby',
     ),
     RecipeModel(
       id: '13',
@@ -176,6 +155,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/Traditional spare.jpeg',
       category: 'Asian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/6MX-Wa6uVBs?si=f6mpJqmqwM-Y9qOP',
     ),
     RecipeModel(
       id: '14',
@@ -187,6 +167,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/Lamb_chops.jpeg',
       category: 'Italian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/bwCVyaXrYTI?si=_ya_67NK1tK7UPPP',
     ),
     RecipeModel(
       id: '15',
@@ -198,6 +179,7 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/Chinese_style_Egg_fried_rice.jpeg',
       category: 'Chinese',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/ZjEL_bLSRlY?si=ligzEaIU4Rq1DqOd',
     ),
   ];
 

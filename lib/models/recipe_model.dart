@@ -11,6 +11,7 @@ class RecipeModel {
   /// Shown as "(13k Reviews)" on detail.
   final int reviewCount;
   final String authorLocation;
+  final String? videoUrl;
 
   RecipeModel({
     required this.id,
@@ -24,12 +25,14 @@ class RecipeModel {
     this.isSaved = false,
     this.reviewCount = 13000,
     this.authorLocation = 'Lagos, Nigeria',
+    this.videoUrl,
   });
 
   RecipeModel copyWith({
     bool? isSaved,
     int? reviewCount,
     String? authorLocation,
+    String? videoUrl,
   }) {
     return RecipeModel(
       id: id,
@@ -43,6 +46,7 @@ class RecipeModel {
       isSaved: isSaved ?? this.isSaved,
       reviewCount: reviewCount ?? this.reviewCount,
       authorLocation: authorLocation ?? this.authorLocation,
+      videoUrl: videoUrl ?? this.videoUrl,
     );
   }
 }

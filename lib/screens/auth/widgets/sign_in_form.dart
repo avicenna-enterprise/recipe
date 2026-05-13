@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../forgot_password_screen.dart';
 
 class SignInForm extends StatelessWidget {
   final TextEditingController emailController;
@@ -57,7 +58,12 @@ class SignInForm extends StatelessWidget {
 
         // Forgot password
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+            );
+          },
           style: TextButton.styleFrom(
             padding: EdgeInsets.zero,
             minimumSize: Size.zero,
