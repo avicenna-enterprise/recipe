@@ -54,6 +54,7 @@ class SearchViewModel extends ChangeNotifier {
       author: 'By Mark Kelvin',
       authorImage: 'assets/images/classic_greek_salad.png',
       category: 'Local Dish',
+      videoUrl: 'https://youtube.com/shorts/827IZsbsZj8?si=mYMxkgQeEF_U0fep',
     ),
     RecipeModel(
       id: 's4',
@@ -64,6 +65,7 @@ class SearchViewModel extends ChangeNotifier {
       author: 'By Laura Wilson',
       authorImage: 'assets/images/classic_greek_salad.png',
       category: 'Chinese',
+      videoUrl: 'https://youtube.com/shorts/ZjEL_bLSRlY?si=ligzEaIU4Rq1DqOd',
     ),
     RecipeModel(
       id: 's5',

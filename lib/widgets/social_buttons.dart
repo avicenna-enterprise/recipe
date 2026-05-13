@@ -59,10 +59,24 @@ class FacebookSignInButton extends StatelessWidget {
           ],
         ),
         child: Center(
-          child: SizedBox(
-            width: 30,
-            height: 30,
-            child: CustomPaint(painter: _FacebookFPainter()),
+          child: Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: const Color(0xFF00597d), // Branded blue
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Center(
+              child: Text(
+                'f',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  height: 1,
+                ),
+              ),
+            ),
           ),
         ),
       ),

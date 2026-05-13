@@ -1,5 +1,3 @@
-import 'ingredient_model.dart';
-
 class RecipeModel {
   final String id;
   final String name;
@@ -15,6 +13,7 @@ class RecipeModel {
   final String authorLocation;
   final List<IngredientModel>? ingredients;
   final List<String>? procedures;
+  final String? videoUrl;
 
   RecipeModel({
     required this.id,
@@ -30,12 +29,14 @@ class RecipeModel {
     this.authorLocation = 'Lagos, Nigeria',
     this.ingredients,
     this.procedures,
+    this.videoUrl,
   });
 
   RecipeModel copyWith({
     bool? isSaved,
     int? reviewCount,
     String? authorLocation,
+    String? videoUrl,
   }) {
     return RecipeModel(
       id: id,

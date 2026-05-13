@@ -5,8 +5,8 @@ import 'screens/auth/sign_in_screen.dart';
 import 'screens/auth/sign_up_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/saved/saved_screen.dart';
-import 'screens/notifications/notifications_screen.dart';
-import 'screens/profile/profile_screen.dart';
+// import 'screens/notifications/notifications_screen.dart';
+// import 'screens/profile/profile_screen.dart';
 import 'screens/explore/explore_recipes_screen.dart';
 import 'widgets/bottom_nav_bar.dart';
 import 'viewmodels/home_viewmodel.dart';
@@ -93,8 +93,9 @@ class _MainWrapperState extends State<MainWrapper> {
     final screens = [
       const HomeScreen(),
       const SavedScreen(),
-      const NotificationsScreen(),
-      const ProfileScreen(),
+      const Center(child: Text('Notifications Screen (Coming Soon)')),
+      const Center(child: Text('Profile Screen (Coming Soon)')),
+      const ExploreRecipesScreen(),
     ];
 
     return Scaffold(
@@ -104,20 +105,19 @@ class _MainWrapperState extends State<MainWrapper> {
       ),
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _currentIndex,
+        showGap: _currentIndex != 4,
         onTap: (index) => setState(() => _currentIndex = index),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const ExploreRecipesScreen(),
+      floatingActionButton: _currentIndex == 4
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                setState(() => _currentIndex = 4);
+              },
+              backgroundColor: const Color(0xFF1B8A6B),
+              shape: const CircleBorder(),
+              child: const Icon(Icons.add, color: Colors.white, size: 28),
             ),
-          );
-        },
-        backgroundColor: const Color(0xFF1B8A6B),
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white, size: 28),
-      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }

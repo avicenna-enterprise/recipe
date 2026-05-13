@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/recipe_model.dart';
 import '../models/user_model.dart';
-import '../models/video_model.dart';
 import 'saved_viewmodel.dart';
 
 class HomeViewModel extends ChangeNotifier {
@@ -96,10 +95,88 @@ class HomeViewModel extends ChangeNotifier {
       authorImage: 'assets/images/classic_greek_salad.jpeg',
       category: 'Italian',
       isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/oSn0Y9c99NU?si=4-luEwnh_Nz0x9QD',
     ),
   ];
 
   // ── new recipes ───────────────────────────────────────────────────────────
+  final List<RecipeModel> _newRecipes = [
+    RecipeModel(
+      id: '3',
+      name: 'Polina Special',
+      image: 'assets/images/polina_Tankilevitch.jpeg',
+      rating: 4.5,
+      time: '20 mins',
+      author: 'Chef Sofia',
+      authorImage: 'assets/images/polina_Tankilevitch.jpeg',
+      category: 'Italian',
+      isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/a5_dXfrkHt4?si=kcK9mAa283uW3vHN',
+    ),
+
+
+
+    RecipeModel(
+      id: '11',
+      name: 'Spice Roasted Chicken',
+      image: 'assets/images/spice_roasted_chicken.jpeg',
+      rating: 4.0,
+      time: '40 mins',
+      author: 'Mark Kelvin',
+      authorImage: 'assets/images/spice_roasted_chicken.jpeg',
+      category: 'Asian',
+      isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/827IZsbsZj8?si=mYMxkgQeEF_U0fep',
+    ),
+    RecipeModel(
+      id: '12',
+      name: 'Steak with Tomato',
+      image: 'assets/images/steak_with_tomatto.jpeg',
+      rating: 4.0,
+      time: '35 mins',
+      author: 'Chef John',
+      authorImage: 'assets/images/steak_with_tomatto.jpeg',
+      category: 'Italian',
+      isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/vKh2ym0XLTY?si=nzCnIGUkeusdyCby',
+    ),
+    RecipeModel(
+      id: '13',
+      name: 'Traditional Spare Ribs Baked',
+      image: 'assets/images/Traditional spare.jpeg',
+      rating: 4.0,
+      time: '60 mins',
+      author: 'Chef John',
+      authorImage: 'assets/images/Traditional spare.jpeg',
+      category: 'Asian',
+      isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/6MX-Wa6uVBs?si=f6mpJqmqwM-Y9qOP',
+    ),
+    RecipeModel(
+      id: '14',
+      name: 'Lamb Chops with Fruity Couscous',
+      image: 'assets/images/Lamb_chops.jpeg',
+      rating: 4.0,
+      time: '45 mins',
+      author: 'Spicy Nelly',
+      authorImage: 'assets/images/Lamb_chops.jpeg',
+      category: 'Italian',
+      isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/bwCVyaXrYTI?si=_ya_67NK1tK7UPPP',
+    ),
+    RecipeModel(
+      id: '15',
+      name: 'Chinese Style Egg Fried Rice with Sliced',
+      image: 'assets/images/Chinese_style_Egg_fried_rice.jpeg',
+      rating: 4.0,
+      time: '25 mins',
+      author: 'Laura Wilson',
+      authorImage: 'assets/images/Chinese_style_Egg_fried_rice.jpeg',
+      category: 'Chinese',
+      isSaved: false,
+      videoUrl: 'https://youtube.com/shorts/ZjEL_bLSRlY?si=ligzEaIU4Rq1DqOd',
+    ),
+  ];
   final List<RecipeModel> _newRecipes = [];
 
   // ── user videos ───────────────────────────────────────────────────────────
