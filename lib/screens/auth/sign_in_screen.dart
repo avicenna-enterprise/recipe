@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/auth_model.dart';
+import '../../models/user_model.dart';
 import '../../viewmodels/auth_viewmodel.dart';
+import '../../viewmodels/home_viewmodel.dart';
 import '../../utils/app_navigator.dart';
-import '../home/home_screen.dart';
+import '../../main.dart';
 import 'widgets/sign_in_form.dart';
 import 'widgets/sign_in_button.dart';
 import 'widgets/sign_in_footer.dart';
@@ -40,7 +43,14 @@ class _SignInScreenState extends State<SignInScreen> {
     if (!mounted) return;
 
     if (success) {
-      AppNavigator.pushAndRemoveAll(context, const HomeScreen());
+      // Pass logged in user name to HomeViewModel
+      final homeVm = context.read<HomeViewModel>();
+      homeVm.setUser(UserModel(
+        id: '1',
+        name: _emailController.text.split('@')[0],
+        email: _emailController.text.trim(),
+      ));
+      AppNavigator.pushAndRemoveAll(context, const MainWrapper());
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

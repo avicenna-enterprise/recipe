@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
@@ -55,8 +56,10 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/splash_screen.png
-    - assets/images/splash_screen1.png
+    - assets/images/
+
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

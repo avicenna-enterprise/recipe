@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/auth_model.dart';
+import '../../models/user_model.dart';
 import '../../viewmodels/auth_viewmodel.dart';
+import '../../viewmodels/home_viewmodel.dart';
 import '../../widgets/social_buttons.dart';
 import '../../utils/app_navigator.dart';
-import '../home/home_screen.dart';
+import '../../main.dart';
 import 'sign_in_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -56,7 +59,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (!mounted) return;
 
     if (success) {
-      AppNavigator.pushAndRemoveAll(context, const HomeScreen());
+      // Pass actual name entered during sign up
+      final homeVm = context.read<HomeViewModel>();
+      homeVm.setUser(UserModel(
+        id: '1',
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+      ));
+      AppNavigator.pushAndRemoveAll(context, const MainWrapper());
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
