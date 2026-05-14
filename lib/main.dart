@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:project2/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'screens/auth/splash_screen.dart';
 import 'screens/auth/sign_in_screen.dart';
 import 'screens/auth/sign_up_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/saved/saved_screen.dart';
-// import 'screens/notifications/notifications_screen.dart';
-// import 'screens/profile/profile_screen.dart';
+ import 'screens/notifications/notifications_screen.dart';
+import 'screens/profile/profile_screen.dart';
 import 'screens/explore/explore_recipes_screen.dart';
 import 'widgets/bottom_nav_bar.dart';
 import 'viewmodels/home_viewmodel.dart';
@@ -93,8 +94,8 @@ class _MainWrapperState extends State<MainWrapper> {
     final screens = [
       const HomeScreen(),
       const SavedScreen(),
-      const Center(child: Text('Notifications Screen (Coming Soon)')),
-      const Center(child: Text('Profile Screen (Coming Soon)')),
+      const NotificationsScreen(),
+      const ProfileScreen(),
       const ExploreRecipesScreen(),
     ];
 

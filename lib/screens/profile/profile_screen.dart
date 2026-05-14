@@ -9,7 +9,6 @@ import '../../models/recipe_model.dart';
 import '../../models/video_model.dart';
 import '../../utils/recipe_navigator.dart';
 import '../../utils/app_navigator.dart';
-import '../../main.dart';
 import '../auth/sign_in_screen.dart';
 import 'settings_screen.dart';
 import 'widgets/profile_stat_item.dart';

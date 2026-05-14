@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import '../models/recipe_model.dart';
 import '../models/user_model.dart';
+import '../models/video_model.dart';
 import 'saved_viewmodel.dart';
 
 class HomeViewModel extends ChangeNotifier {
 
   SavedViewModel? _savedViewModel;
   String _searchQuery = '';
+  final List<VideoModel> _userVideos = [];
 
   void setSavedViewModel(SavedViewModel vm) {
     _savedViewModel = vm;
@@ -190,6 +192,7 @@ class HomeViewModel extends ChangeNotifier {
   String get selectedCategoryName => categories[_selectedCategory];
   List<RecipeModel> get featured => _applyFilters(_featured);
   List<RecipeModel> get newRecipes => _applyFilters(_newRecipes);
+  List<VideoModel> get userVideos => _userVideos;
 
   List<RecipeModel> get allRecipes => [..._featured, ..._newRecipes];
 
