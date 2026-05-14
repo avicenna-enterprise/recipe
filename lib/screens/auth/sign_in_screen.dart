@@ -4,6 +4,7 @@ import '../../models/auth_model.dart';
 import '../../models/user_model.dart';
 import '../../viewmodels/auth_viewmodel.dart';
 import '../../viewmodels/home_viewmodel.dart';
+import '../../viewmodels/profile_viewmodel.dart';
 import '../../utils/app_navigator.dart';
 import '../../main.dart';
 import 'widgets/sign_in_form.dart';
@@ -43,13 +44,16 @@ class _SignInScreenState extends State<SignInScreen> {
     if (!mounted) return;
 
     if (success) {
-      // Pass logged in user name to HomeViewModel
       final homeVm = context.read<HomeViewModel>();
       homeVm.setUser(UserModel(
         id: '1',
         name: _emailController.text.split('@')[0],
         email: _emailController.text.trim(),
       ));
+      context.read<ProfileViewModel>().setUser(
+            _emailController.text.split('@')[0],
+            _emailController.text.trim(),
+          );
       AppNavigator.pushAndRemoveAll(context, const MainWrapper());
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

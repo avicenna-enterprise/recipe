@@ -1,3 +1,5 @@
+import 'ingredient_model.dart';
+
 class RecipeModel {
   final String id;
   final String name;
@@ -12,6 +14,8 @@ class RecipeModel {
   final int reviewCount;
   final String authorLocation;
   final String? videoUrl;
+  final List<IngredientModel>? ingredients;
+  final List<String>? procedures;
 
   RecipeModel({
     required this.id,
@@ -25,6 +29,8 @@ class RecipeModel {
     this.isSaved = false,
     this.reviewCount = 13000,
     this.authorLocation = 'Lagos, Nigeria',
+    this.ingredients,
+    this.procedures,
     this.videoUrl,
   });
 
@@ -47,6 +53,26 @@ class RecipeModel {
       reviewCount: reviewCount ?? this.reviewCount,
       authorLocation: authorLocation ?? this.authorLocation,
       videoUrl: videoUrl ?? this.videoUrl,
+      ingredients: ingredients,
+      procedures: procedures,
+    );
+  }
+
+  RecipeModel copyWithRating(double newRating) {
+    return RecipeModel(
+      id: id,
+      name: name,
+      image: image,
+      rating: newRating,
+      time: time,
+      author: author,
+      authorImage: authorImage,
+      category: category,
+      isSaved: isSaved,
+      reviewCount: reviewCount + 1,
+      authorLocation: authorLocation,
+      ingredients: ingredients,
+      procedures: procedures,
     );
   }
 }

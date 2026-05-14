@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/notification_viewmodel.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -14,6 +16,8 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final unreadCount = context.watch<NotificationViewModel>().unreadCount;
+
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
       notchMargin: 8,
@@ -46,6 +50,7 @@ class BottomNavBar extends StatelessWidget {
             index: 2,
             selectedIndex: selectedIndex,
             onTap: onTap,
+            badgeCount: unreadCount,
           ),
           _NavItem(
             icon: Icons.person_outline,
@@ -68,6 +73,7 @@ class _NavItem extends StatelessWidget {
   final int index;
   final int selectedIndex;
   final Function(int) onTap;
+  final int badgeCount;
 
   const _NavItem({
     required this.icon,
@@ -76,6 +82,7 @@ class _NavItem extends StatelessWidget {
     required this.index,
     required this.selectedIndex,
     required this.onTap,
+    this.badgeCount = 0,
   });
 
   @override
@@ -86,13 +93,45 @@ class _NavItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            isSelected ? activeIcon : icon,
-            color: isSelected
-                ? const Color(0xFF1B8A6B)
-                : Colors.grey,
-            size: 24,
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Icon(
+                isSelected ? activeIcon : icon,
+                color: isSelected
+                    ? const Color(0xFF1B8A6B)
+                    : Colors.grey,
+                size: 24,
+              ),
+              // Red badge dot
+              if (badgeCount > 0)
+                Positioned(
+                  top: -4,
+                  right: -6,
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      badgeCount > 9 ? '9+' : '$badgeCount',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
           ),
+          const SizedBox(height: 2),
           Text(
             label,
             style: TextStyle(
@@ -100,9 +139,8 @@ class _NavItem extends StatelessWidget {
               color: isSelected
                   ? const Color(0xFF1B8A6B)
                   : Colors.grey,
-              fontWeight: isSelected
-                  ? FontWeight.w600
-                  : FontWeight.normal,
+              fontWeight:
+                  isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
         ],

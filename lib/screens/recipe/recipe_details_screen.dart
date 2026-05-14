@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/recipe_model.dart';
+import '../../models/ingredient_model.dart';
 import '../../viewmodels/recipe_detail_viewmodel.dart';
+import '../../viewmodels/saved_viewmodel.dart';
+import '../../viewmodels/home_viewmodel.dart';
+import '../../viewmodels/notification_viewmodel.dart';
 import '../../utils/app_colors.dart';
+import 'reviews_screen.dart';
 import 'widgets/recipe_hero.dart';
 import 'widgets/author_info.dart';
 import 'widgets/recipe_tabs.dart';
@@ -45,7 +50,7 @@ class _RecipeDetailsBody extends StatelessWidget {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-          // ── Hero Section (Image + Nav) ───────────────────────────────────
+          // ── Hero Image ──────────────────────────────────────────────
           SliverToBoxAdapter(
             child: RecipeHero(
               recipe: recipe,
@@ -75,11 +80,21 @@ class _RecipeDetailsBody extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        '(${recipe.reviewCount ~/ 1000}k Reviews)',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: AppColors.textGrey,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    ReviewsScreen(recipeId: recipe.id)),
+                          );
+                        },
+                        child: Text(
+                          '(${recipe.rating * 1000 ~/ 1}k Reviews)',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textGrey,
+                          ),
                         ),
                       ),
                     ],
@@ -161,4 +176,3 @@ class _RecipeDetailsBody extends StatelessWidget {
     );
   }
 }
-

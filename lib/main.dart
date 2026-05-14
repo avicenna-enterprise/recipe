@@ -13,6 +13,10 @@ import 'viewmodels/home_viewmodel.dart';
 import 'viewmodels/saved_viewmodel.dart';
 import 'viewmodels/recipe_viewmodel.dart';
 import 'viewmodels/search_viewmodel.dart';
+import 'viewmodels/notification_viewmodel.dart';
+import 'viewmodels/profile_viewmodel.dart';
+import 'viewmodels/settings_viewmodel.dart';
+import 'viewmodels/reviews_viewmodel.dart';
 
 void main() {
   runApp(
@@ -22,6 +26,10 @@ void main() {
         ChangeNotifierProvider(create: (_) => SavedViewModel()),
         ChangeNotifierProvider(create: (_) => RecipeViewModel()),
         ChangeNotifierProvider(create: (_) => SearchViewModel()),
+        ChangeNotifierProvider(create: (_) => NotificationViewModel()),
+        ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => SettingsViewModel()),
+        ChangeNotifierProvider(create: (_) => ReviewsViewModel()),
       ],
       child: const MyApp(),
     ),
@@ -74,7 +82,9 @@ class _MainWrapperState extends State<MainWrapper> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final homeVm = context.read<HomeViewModel>();
       final savedVm = context.read<SavedViewModel>();
+      final notifVm = context.read<NotificationViewModel>();
       homeVm.setSavedViewModel(savedVm);
+      savedVm.setNotificationViewModel(notifVm);
     });
   }
 

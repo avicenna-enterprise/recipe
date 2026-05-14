@@ -1,22 +1,26 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../models/recipe_model.dart';
 import '../../../utils/app_colors.dart';
 
 class NewRecipeCard extends StatelessWidget {
   final RecipeModel recipe;
+  final VoidCallback? onTap;
 
-  const NewRecipeCard({super.key, required this.recipe});
+  const NewRecipeCard({super.key, required this.recipe, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 280,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 280,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.cardBg,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Row(
         children: [
           Expanded(
             child: Column(
@@ -54,23 +58,21 @@ class NewRecipeCard extends StatelessWidget {
                 Row(
                   children: [
                     ClipOval(
-                      child: Image.asset(
-                        recipe.authorImage,
-                        width: 22,
-                        height: 22,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          width: 22,
-                          height: 22,
-                          color: AppColors.cardBg,
-                          alignment: Alignment.center,
-                          child: const Icon(
-                            Icons.person,
-                            size: 14,
-                            color: AppColors.textGrey,
-                          ),
-                        ),
-                      ),
+                      child: recipe.authorImage.startsWith('assets/')
+                          ? Image.asset(
+                              recipe.authorImage,
+                              width: 22,
+                              height: 22,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => _authorError(),
+                            )
+                          : Image.file(
+                              File(recipe.authorImage),
+                              width: 22,
+                              height: 22,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => _authorError(),
+                            ),
                     ),
                     const SizedBox(width: 6),
                     Expanded(
@@ -99,24 +101,51 @@ class NewRecipeCard extends StatelessWidget {
 
           // image
           ClipOval(
-            child: Image.asset(
-              recipe.image,
-              width: 65,
-              height: 65,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                width: 65,
-                height: 65,
-                color: AppColors.cardBg,
-                alignment: Alignment.center,
-                child: const Icon(
-                  Icons.image_not_supported,
-                  color: AppColors.textGrey,
-                ),
-              ),
-            ),
+            child: recipe.image.startsWith('assets/')
+                ? Image.asset(
+                    recipe.image,
+                    width: 65,
+                    height: 65,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _recipeError(),
+                  )
+                : Image.file(
+                    File(recipe.image),
+                    width: 65,
+                    height: 65,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _recipeError(),
+                  ),
           ),
         ],
+      ),
+    ),
+  );
+}
+
+  Widget _authorError() {
+    return Container(
+      width: 22,
+      height: 22,
+      color: AppColors.cardBg,
+      alignment: Alignment.center,
+      child: const Icon(
+        Icons.person,
+        size: 14,
+        color: AppColors.textGrey,
+      ),
+    );
+  }
+
+  Widget _recipeError() {
+    return Container(
+      width: 65,
+      height: 65,
+      color: AppColors.cardBg,
+      alignment: Alignment.center,
+      child: const Icon(
+        Icons.image_not_supported,
+        color: AppColors.textGrey,
       ),
     );
   }

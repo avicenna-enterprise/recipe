@@ -251,6 +251,115 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addRecipe(RecipeModel recipe) {
+    _newRecipes.insert(0, recipe);
+    notifyListeners();
+  }
+
+  void addVideo(VideoModel video) {
+    _userVideos.insert(0, video);
+    notifyListeners();
+  }
+
+  void deleteVideo(String videoId) {
+    final idx = _userVideos.indexWhere((v) => v.id == videoId);
+    if (idx != -1) {
+      _lastDeletedVideo = _userVideos[idx];
+      _lastDeletedVideoIndex = idx;
+      _userVideos.removeAt(idx);
+      notifyListeners();
+    }
+  }
+
+  VideoModel? _lastDeletedVideo;
+  int? _lastDeletedVideoIndex;
+
+  void undoDeleteVideo() {
+    if (_lastDeletedVideo != null && _lastDeletedVideoIndex != null) {
+      _userVideos.insert(_lastDeletedVideoIndex!, _lastDeletedVideo!);
+      _lastDeletedVideo = null;
+      _lastDeletedVideoIndex = null;
+      notifyListeners();
+    }
+  }
+
+  void updateVideo(VideoModel video) {
+    final idx = _userVideos.indexWhere((v) => v.id == video.id);
+    if (idx != -1) {
+      _userVideos[idx] = video;
+      notifyListeners();
+    }
+  }
+
+  RecipeModel? _lastDeletedRecipe;
+  int? _lastDeletedIndex;
+  bool _lastFromFeatured = false;
+
+  List<RecipeModel> get userRecipes {
+    // Return only recipes authored by the current user
+    return allRecipes.where((r) => r.author.contains(_user.name)).toList();
+  }
+
+  void deleteRecipe(String recipeId) {
+    // Find where it was to support undo
+    final fIdx = _featured.indexWhere((r) => r.id == recipeId);
+    if (fIdx != -1) {
+      _lastDeletedRecipe = _featured[fIdx];
+      _lastDeletedIndex = fIdx;
+      _lastFromFeatured = true;
+      _featured.removeAt(fIdx);
+    } else {
+      final nIdx = _newRecipes.indexWhere((r) => r.id == recipeId);
+      if (nIdx != -1) {
+        _lastDeletedRecipe = _newRecipes[nIdx];
+        _lastDeletedIndex = nIdx;
+        _lastFromFeatured = false;
+        _newRecipes.removeAt(nIdx);
+      }
+    }
+
+    if (_savedViewModel != null) {
+      _savedViewModel!.removeRecipe(recipeId);
+    }
+    notifyListeners();
+  }
+
+  void undoDelete() {
+    if (_lastDeletedRecipe == null) return;
+    if (_lastFromFeatured) {
+      _featured.insert(_lastDeletedIndex!, _lastDeletedRecipe!);
+    } else {
+      _newRecipes.insert(_lastDeletedIndex!, _lastDeletedRecipe!);
+    }
+    _lastDeletedRecipe = null;
+    notifyListeners();
+  }
+
+
+  void updateRecipeRating(String recipeId, double newRating) {
+    final fIdx = _featured.indexWhere((r) => r.id == recipeId);
+    if (fIdx != -1) {
+      _featured[fIdx] = _featured[fIdx].copyWithRating(newRating);
+    }
+    final nIdx = _newRecipes.indexWhere((r) => r.id == recipeId);
+    if (nIdx != -1) {
+      _newRecipes[nIdx] = _newRecipes[nIdx].copyWithRating(newRating);
+    }
+    notifyListeners();
+  }
+
+  void updateRecipe(RecipeModel recipe) {
+    final fIdx = _featured.indexWhere((r) => r.id == recipe.id);
+    if (fIdx != -1) {
+      _featured[fIdx] = recipe;
+    }
+    final nIdx = _newRecipes.indexWhere((r) => r.id == recipe.id);
+    if (nIdx != -1) {
+      _newRecipes[nIdx] = recipe;
+    }
+    notifyListeners();
+  }
+
   void setUser(UserModel user) {
     _user = user;
     notifyListeners();

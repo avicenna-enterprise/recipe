@@ -17,11 +17,6 @@ class _ExploreRecipesScreenState extends State<ExploreRecipesScreen> {
   final TextEditingController _searchCtrl = TextEditingController();
   String _query = '';
 
-  // Filter state
-  FilterSortOption _sort = FilterSortOption.newest;
-  int _minRating = 0;
-  String _category = 'All';
-
   @override
   void dispose() {
     _searchCtrl.dispose();
@@ -33,24 +28,13 @@ class _ExploreRecipesScreenState extends State<ExploreRecipesScreen> {
     final vm = context.watch<HomeViewModel>();
     final allRecipes = vm.allRecipes;
 
-    // Filter logic
-    var filtered = allRecipes.where((r) {
-      final matchesQuery = _query.isEmpty ||
-          r.name.toLowerCase().contains(_query.toLowerCase()) ||
-          r.author.toLowerCase().contains(_query.toLowerCase());
-
-      final matchesCategory = _category == 'All' || r.category == _category;
-      final matchesRating = r.rating >= _minRating;
-
-      return matchesQuery && matchesCategory && matchesRating;
-    }).toList();
-
-    // Sort logic
-    if (_sort == FilterSortOption.popularity) {
-      filtered.sort((a, b) => b.rating.compareTo(a.rating));
-    } else if (_sort == FilterSortOption.oldest) {
-      filtered = filtered.reversed.toList();
-    }
+    final filtered = _query.trim().isEmpty
+        ? allRecipes
+        : allRecipes
+            .where((r) =>
+                r.name.toLowerCase().contains(_query.toLowerCase()) ||
+                r.author.toLowerCase().contains(_query.toLowerCase()))
+            .toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -72,33 +56,57 @@ class _ExploreRecipesScreenState extends State<ExploreRecipesScreen> {
       ),
       body: Column(
         children: [
-          // Search bar (Extracted Widget)
-          ExploreSearchBar(
-            controller: _searchCtrl,
-            query: _query,
-            onChanged: (v) => setState(() => _query = v),
-            onClear: () {
-              _searchCtrl.clear();
-              setState(() => _query = '');
-            },
-            onFilterTap: () {
-              showRecipeFilterBottomSheet(
-                context: context,
-                initial: FilterSelection(
-                  sort: _sort,
-                  minRating: _minRating,
-                  category: _category,
+          // Search bar
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: TextField(
+                      controller: _searchCtrl,
+                      onChanged: (v) => setState(() => _query = v),
+                      decoration: InputDecoration(
+                        hintText: 'Search recipe',
+                        hintStyle: const TextStyle(
+                            color: AppColors.textGrey, fontSize: 14),
+                        prefixIcon: const Icon(Icons.search,
+                            color: AppColors.textGrey),
+                        suffixIcon: _query.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.close,
+                                    color: AppColors.textGrey, size: 18),
+                                onPressed: () {
+                                  _searchCtrl.clear();
+                                  setState(() => _query = '');
+                                },
+                              )
+                            : null,
+                        border: InputBorder.none,
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                    ),
+                  ),
                 ),
-                categories: vm.categories,
-                onApply: (selection) {
-                  setState(() {
-                    _sort = selection.sort;
-                    _minRating = selection.minRating;
-                    _category = selection.category;
-                  });
-                },
-              );
-            },
+                const SizedBox(width: 10),
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(Icons.tune,
+                      color: Colors.white, size: 22),
+                ),
+              ],
+            ),
           ),
 
           // Grid
