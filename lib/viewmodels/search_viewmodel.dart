@@ -32,7 +32,7 @@ class SearchViewModel extends ChangeNotifier {
       rating: 4.0,
       time: '30 mins',
       author: 'By Chef John',
-      authorImage: 'assets/images/classic_greek_salad.png',
+      authorImage: 'assets/images/classic_greek_salad.jpeg',
       category: 'Dinner',
     ),
     RecipeModel(
@@ -42,7 +42,7 @@ class SearchViewModel extends ChangeNotifier {
       rating: 4.0,
       time: '25 mins',
       author: 'By Spicy Nelly',
-      authorImage: 'assets/images/classic_greek_salad.png',
+      authorImage: 'assets/images/classic_greek_salad.jpeg',
       category: 'Dinner',
     ),
     RecipeModel(
@@ -52,7 +52,7 @@ class SearchViewModel extends ChangeNotifier {
       rating: 4.0,
       time: '40 mins',
       author: 'By Mark Kelvin',
-      authorImage: 'assets/images/classic_greek_salad.png',
+      authorImage: 'assets/images/classic_greek_salad.jpeg',
       category: 'Local Dish',
       videoUrl: 'https://youtube.com/shorts/827IZsbsZj8?si=mYMxkgQeEF_U0fep',
     ),
@@ -63,7 +63,7 @@ class SearchViewModel extends ChangeNotifier {
       rating: 4.0,
       time: '20 mins',
       author: 'By Laura Wilson',
-      authorImage: 'assets/images/classic_greek_salad.png',
+      authorImage: 'assets/images/classic_greek_salad.jpeg',
       category: 'Chinese',
       videoUrl: 'https://youtube.com/shorts/ZjEL_bLSRlY?si=ligzEaIU4Rq1DqOd',
     ),
@@ -74,7 +74,7 @@ class SearchViewModel extends ChangeNotifier {
       rating: 4.0,
       time: '25 mins',
       author: 'By Spicy Nelly',
-      authorImage: 'assets/images/classic_greek_salad.png',
+      authorImage: 'assets/images/classic_greek_salad.jpeg',
       category: 'Dinner',
     ),
     RecipeModel(
@@ -84,27 +84,27 @@ class SearchViewModel extends ChangeNotifier {
       rating: 4.0,
       time: '30 mins',
       author: 'By Chef John',
-      authorImage: 'assets/images/classic_greek_salad.png',
+      authorImage: 'assets/images/classic_greek_salad.jpeg',
       category: 'Dinner',
     ),
     RecipeModel(
       id: 's7',
       name: 'Classic Greek Salad',
-      image: 'assets/images/classic_greek_salad.png',
+      image: 'assets/images/classic_greek_salad.jpeg',
       rating: 4.5,
       time: '15 mins',
       author: 'By Chef Ali',
-      authorImage: 'assets/images/classic_greek_salad.png',
+      authorImage: 'assets/images/classic_greek_salad.jpeg',
       category: 'Vegetables',
     ),
     RecipeModel(
       id: 's8',
       name: 'Crunchy Nut Coleslaw',
-      image: 'assets/images/crunchy_nut_coleslaw.png',
+      image: 'assets/images/crunchy_nut_coleslaw.jpeg',
       rating: 3.5,
       time: '10 mins',
       author: 'By Chef Sara',
-      authorImage: 'assets/images/classic_greek_salad.png',
+      authorImage: 'assets/images/classic_greek_salad.jpeg',
       category: 'Vegetables',
     ),
   ];
@@ -142,6 +142,9 @@ class SearchViewModel extends ChangeNotifier {
         break;
       case FilterSortOption.popularity:
         out.sort((a, b) => b.rating.compareTo(a.rating));
+        break;
+      case FilterSortOption.all:
+        // No specific sorting
         break;
     }
     return out;

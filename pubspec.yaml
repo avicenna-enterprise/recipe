@@ -36,6 +36,8 @@ dependencies:
   image_cropper: ^12.2.1
   video_player: ^2.11.1
   url_launcher: ^6.3.2
+  app_links: ^6.3.2
+  share_plus: ^10.1.4
 
 dev_dependencies:
   flutter_test:

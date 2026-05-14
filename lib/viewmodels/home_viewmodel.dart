@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/recipe_model.dart';
 import '../models/user_model.dart';
 import '../models/video_model.dart';
+import '../widgets/filter_bottom_sheet.dart';
 import 'saved_viewmodel.dart';
 
 class HomeViewModel extends ChangeNotifier {
@@ -9,6 +10,26 @@ class HomeViewModel extends ChangeNotifier {
   SavedViewModel? _savedViewModel;
   String _searchQuery = '';
   final List<VideoModel> _userVideos = [];
+
+  FilterSelection _homeFilter = const FilterSelection(
+    sort: FilterSortOption.newest,
+    minRating: 0,
+    category: 'All',
+  );
+
+  FilterSelection _exploreFilter = const FilterSelection(
+    sort: FilterSortOption.newest,
+    minRating: 0,
+    category: 'All',
+  );
+
+  FilterSelection get homeFilter => _homeFilter;
+  FilterSelection get exploreFilter => _exploreFilter;
+
+  List<String> get filterCategories => [
+    'All', 'Cereal', 'Vegetables', 'Dinner', 'Chinese',
+    'Local Dish', 'Fruit', 'Breakfast', 'Spanish', 'Lunch'
+  ];
 
   void setSavedViewModel(SavedViewModel vm) {
     _savedViewModel = vm;
@@ -147,42 +168,7 @@ class HomeViewModel extends ChangeNotifier {
       isSaved: false,
       videoUrl: 'https://youtube.com/shorts/vKh2ym0XLTY?si=nzCnIGUkeusdyCby',
     ),
-    RecipeModel(
-      id: '13',
-      name: 'Traditional Spare Ribs Baked',
-      image: 'assets/images/Traditional spare.jpeg',
-      rating: 4.0,
-      time: '60 mins',
-      author: 'Chef John',
-      authorImage: 'assets/images/Traditional spare.jpeg',
-      category: 'Asian',
-      isSaved: false,
-      videoUrl: 'https://youtube.com/shorts/6MX-Wa6uVBs?si=f6mpJqmqwM-Y9qOP',
-    ),
-    RecipeModel(
-      id: '14',
-      name: 'Lamb Chops with Fruity Couscous',
-      image: 'assets/images/Lamb_chops.jpeg',
-      rating: 4.0,
-      time: '45 mins',
-      author: 'Spicy Nelly',
-      authorImage: 'assets/images/Lamb_chops.jpeg',
-      category: 'Italian',
-      isSaved: false,
-      videoUrl: 'https://youtube.com/shorts/bwCVyaXrYTI?si=_ya_67NK1tK7UPPP',
-    ),
-    RecipeModel(
-      id: '15',
-      name: 'Chinese Style Egg Fried Rice with Sliced',
-      image: 'assets/images/Chinese_style_Egg_fried_rice.jpeg',
-      rating: 4.0,
-      time: '25 mins',
-      author: 'Laura Wilson',
-      authorImage: 'assets/images/Chinese_style_Egg_fried_rice.jpeg',
-      category: 'Chinese',
-      isSaved: false,
-      videoUrl: 'https://youtube.com/shorts/ZjEL_bLSRlY?si=ligzEaIU4Rq1DqOd',
-    ),
+
   ];
 
   // ── getters ───────────────────────────────────────────────────────────────
@@ -190,16 +176,17 @@ class HomeViewModel extends ChangeNotifier {
   int get selectedCategory => _selectedCategory;
   String get searchQuery => _searchQuery;
   String get selectedCategoryName => categories[_selectedCategory];
-  List<RecipeModel> get featured => _applyFilters(_featured);
-  List<RecipeModel> get newRecipes => _applyFilters(_newRecipes);
+  List<RecipeModel> get featured => _applyHomeFilters(_featured.where((r) => r.id != '9' && r.id != '10').toList());
+  List<RecipeModel> get newRecipes => _applyHomeFilters(_newRecipes);
   List<VideoModel> get userVideos => _userVideos;
 
   List<RecipeModel> get allRecipes => [..._featured, ..._newRecipes];
+  List<RecipeModel> get exploreRecipes => _applyExploreFilters(allRecipes);
 
   List<RecipeModel> get searchResults {
     final q = _searchQuery.trim().toLowerCase();
     if (q.isEmpty) return const [];
-    return _applyFilters(allRecipes)
+    return _applyHomeFilters(allRecipes)
         .where((r) => r.name.toLowerCase().contains(q))
         .toList();
   }
@@ -220,10 +207,47 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<RecipeModel> _applyFilters(List<RecipeModel> list) {
-    final selected = selectedCategoryName;
-    if (selected == 'All') return list;
-    return list.where((r) => r.category == selected).toList();
+  List<RecipeModel> _applyHomeFilters(List<RecipeModel> list) {
+    return _applyLogic(list, _homeFilter);
+  }
+
+  List<RecipeModel> _applyExploreFilters(List<RecipeModel> list) {
+    return _applyLogic(list, _exploreFilter);
+  }
+
+  List<RecipeModel> _applyLogic(List<RecipeModel> list, FilterSelection selection) {
+    var filtered = [...list];
+
+    // 1. Category Filter
+    if (selection.category != 'All') {
+      filtered = filtered.where((r) => r.category == selection.category).toList();
+    }
+
+    // 2. Rating Filter
+    if (selection.minRating > 0) {
+      filtered = filtered.where((r) => r.rating >= selection.minRating).toList();
+    }
+
+    // 3. Sorting
+    if (selection.sort == FilterSortOption.popularity) {
+      filtered.sort((a, b) => b.rating.compareTo(a.rating));
+    } else if (selection.sort == FilterSortOption.newest) {
+      filtered.sort((a, b) => b.id.compareTo(a.id));
+    } else if (selection.sort == FilterSortOption.oldest) {
+      filtered.sort((a, b) => a.id.compareTo(b.id));
+    }
+
+    return filtered;
+  }
+
+  void updateHomeFilter(FilterSelection selection) {
+    _homeFilter = selection;
+    notifyListeners();
+  }
+
+  void updateExploreFilter(FilterSelection selection) {
+    _exploreFilter = selection;
+    notifyListeners();
   }
 
   void toggleSave(String recipeId) {

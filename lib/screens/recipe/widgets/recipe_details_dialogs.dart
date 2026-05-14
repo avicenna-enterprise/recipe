@@ -92,8 +92,8 @@ void showShareDialog(BuildContext context, RecipeModel recipe) {
   showDialog(
     context: context,
     builder: (context) {
-      final String recipeLink =
-          'app.Recipe.co/${recipe.name.toLowerCase().replaceAll(' ', '_')}';
+      final String recipeId = recipe.name.toLowerCase().replaceAll(' ', '_');
+      final String recipeLink = 'https://app.recipe.co/recipe/$recipeId';
       return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(

@@ -226,7 +226,7 @@ class _NotificationsBody extends StatelessWidget {
                                           content: const Text(
                                               'Notification deleted'),
                                           duration:
-                                              const Duration(seconds: 4),
+                                              const Duration(seconds: 2),
                                           action: SnackBarAction(
                                             label: 'UNDO',
                                             textColor: const Color(
@@ -265,5 +265,3 @@ class _NotificationsBody extends StatelessWidget {
     );
   }
 }
-
-

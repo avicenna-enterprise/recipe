@@ -9,6 +9,7 @@ import 'widgets/category_tabs.dart';
 import 'widgets/featured_card.dart';
 import 'widgets/new_recipe_card.dart';
 import '../search/widgets/search_recipe_card.dart';
+import '../explore/explore_recipes_screen.dart';
 
 class HomeScreen extends StatelessWidget {
 const HomeScreen({super.key});
@@ -41,7 +42,38 @@ categories: vm.categories,
 selectedIndex: vm.selectedCategory,
 onTap: vm.selectCategory,
 ),
-const SizedBox(height: 24),
+const SizedBox(height: 8),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    const Text(
+      'Featured Recipes',
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: AppColors.textDark,
+      ),
+    ),
+    TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => const ExploreRecipesScreen()),
+        );
+      },
+      child: const Text(
+        'See All',
+        style: TextStyle(
+          color: AppColors.primary,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+  ],
+),
+const SizedBox(height: 16),
 
 if (vm.searchQuery.trim().isNotEmpty) ...[
 Text(
@@ -82,7 +114,7 @@ const SizedBox(height: 20),
 ] else ...[
 // ── featured recipes ────────────────────────────────────
 SizedBox(
-height: 240,
+height: 230,
 child: ListView.separated(
 scrollDirection: Axis.horizontal,
 itemCount: vm.featured.length,
@@ -99,32 +131,55 @@ onTap: () => openRecipeDetail(context, recipe),
 ),
 const SizedBox(height: 28),
 
-// ── new recipes ─────────────────────────────────────────
-const Text(
-'New Recipes',
-style: TextStyle(
-fontSize: 20,
-fontWeight: FontWeight.bold,
-color: AppColors.textDark,
-),
-),
-const SizedBox(height: 16),
-SizedBox(
-height: 100,
-child: ListView.separated(
-scrollDirection: Axis.horizontal,
-itemCount: vm.newRecipes.length,
-separatorBuilder: (context, index) => const SizedBox(width: 14),
-                          itemBuilder: (_, index) {
-                            final recipe = vm.newRecipes[index];
-                            return NewRecipeCard(
-                              recipe: recipe,
-                              onTap: () => openRecipeDetail(context, recipe),
-                            );
-                          },
-),
-),
-const SizedBox(height: 20),
+            // ── new recipes ─────────────────────────────────────────
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'New Recipes',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textDark,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) =>
+                              const ExploreRecipesScreen(showOnlyNew: true)),
+                    );
+                  },
+                  child: const Text(
+                    'See All',
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 140, // Increased for pop-out image
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: vm.newRecipes.length > 3 ? 3 : vm.newRecipes.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 14),
+                itemBuilder: (_, index) {
+                  final recipe = vm.newRecipes[index];
+                  return NewRecipeCard(
+                    recipe: recipe,
+                    onTap: () => openRecipeDetail(context, recipe),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
 ],
 ],
 ),

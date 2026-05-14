@@ -7,7 +7,8 @@ import 'widgets/explore_recipe_card.dart';
 import 'widgets/explore_search_bar.dart';
 
 class ExploreRecipesScreen extends StatefulWidget {
-  const ExploreRecipesScreen({super.key});
+  final bool showOnlyNew;
+  const ExploreRecipesScreen({super.key, this.showOnlyNew = false});
 
   @override
   State<ExploreRecipesScreen> createState() => _ExploreRecipesScreenState();
@@ -26,11 +27,11 @@ class _ExploreRecipesScreenState extends State<ExploreRecipesScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<HomeViewModel>();
-    final allRecipes = vm.allRecipes;
+    final recipes = widget.showOnlyNew ? vm.newRecipes : vm.exploreRecipes;
 
     final filtered = _query.trim().isEmpty
-        ? allRecipes
-        : allRecipes
+        ? recipes
+        : recipes
             .where((r) =>
                 r.name.toLowerCase().contains(_query.toLowerCase()) ||
                 r.author.toLowerCase().contains(_query.toLowerCase()))
@@ -45,9 +46,9 @@ class _ExploreRecipesScreenState extends State<ExploreRecipesScreen> {
           icon: const Icon(Icons.arrow_back, color: AppColors.textDark),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Explore Recipes',
-          style: TextStyle(
+        title: Text(
+          widget.showOnlyNew ? 'New Recipes' : 'Explore Recipes',
+          style: const TextStyle(
             color: AppColors.textDark,
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -66,7 +67,7 @@ class _ExploreRecipesScreenState extends State<ExploreRecipesScreen> {
                     height: 50,
                     decoration: BoxDecoration(
                       color: const Color(0xFFF5F5F5),
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextField(
                       controller: _searchCtrl,
@@ -95,15 +96,25 @@ class _ExploreRecipesScreenState extends State<ExploreRecipesScreen> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(14),
+                InkWell(
+                  onTap: () {
+                    showRecipeFilterBottomSheet(
+                      context: context,
+                      initial: vm.exploreFilter,
+                      categories: vm.filterCategories,
+                      onApply: vm.updateExploreFilter,
+                    );
+                  },
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.tune,
+                        color: Colors.white, size: 22),
                   ),
-                  child: const Icon(Icons.tune,
-                      color: Colors.white, size: 22),
                 ),
               ],
             ),

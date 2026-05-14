@@ -41,7 +41,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
             height: 52,
             decoration: BoxDecoration(
               color: AppColors.cardBg,
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: TextField(
               controller: _ctrl,
@@ -68,17 +68,14 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
         ),
         const SizedBox(width: 12),
         InkWell(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(6),
           onTap: () {
+            final vm = context.read<HomeViewModel>();
             showRecipeFilterBottomSheet(
               context: context,
-              initial: const FilterSelection(
-                sort: FilterSortOption.newest,
-                minRating: 0,
-                category: 'All',
-              ),
-              categories: const ['All'],
-              onApply: (_) {},
+              initial: vm.homeFilter,
+              categories: vm.filterCategories,
+              onApply: vm.updateHomeFilter,
             );
           },
           child: Container(
@@ -86,7 +83,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
             height: 52,
             decoration: BoxDecoration(
               color: AppColors.primary,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.tune, color: AppColors.white, size: 22),
           ),

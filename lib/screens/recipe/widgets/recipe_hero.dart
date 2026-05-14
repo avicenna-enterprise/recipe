@@ -71,10 +71,10 @@ class RecipeHero extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.transparent,
-                        Colors.black.withValues(alpha: 0.4),
+                        Colors.black.withOpacity(0.0),
+                        Colors.black.withOpacity(0.8),
                       ],
-                      stops: const [0.6, 1.0],
+                      stops: const [0.4, 1.0],
                     ),
                   ),
                 ),

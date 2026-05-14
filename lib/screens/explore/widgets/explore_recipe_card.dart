@@ -12,12 +12,14 @@ class ExploreRecipeCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => openRecipeDetail(context, recipe),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+
+        borderRadius: BorderRadius.circular(20),
         child: Stack(
           fit: StackFit.expand,
           children: [
             // Background image
             Image.asset(
+
               recipe.image,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
@@ -34,9 +36,10 @@ class ExploreRecipeCard extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.75),
+                    Colors.black.withOpacity(0.0),
+                    Colors.black.withOpacity(0.9),
                   ],
+                  stops: const [0.4, 1.0],
                 ),
               ),
             ),

@@ -68,7 +68,10 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_image == null && widget.recipe == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select an image')),
+        const SnackBar(
+          content: Text('Please select an image'),
+          duration: Duration(seconds: 2),
+        ),
       );
       return;
     }
@@ -146,6 +149,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+          duration: const Duration(seconds: 2),
           content: Text(widget.recipe == null
               ? 'Recipe added successfully!'
               : 'Recipe updated successfully!')),

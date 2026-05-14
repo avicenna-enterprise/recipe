@@ -55,7 +55,10 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
   void _save() {
     if (!_formKey.currentState!.validate() || _videoFile == null || _thumbnailFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields and select a video and thumbnail')),
+        const SnackBar(
+          content: Text('Please fill all fields and select a video and thumbnail'),
+          duration: Duration(seconds: 2),
+        ),
       );
       return;
     }
@@ -93,7 +96,9 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
     Navigator.pop(context);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(widget.video == null ? 'Video added successfully!' : 'Video updated successfully!')),
+      SnackBar(
+          duration: const Duration(seconds: 2),
+          content: Text(widget.video == null ? 'Video added successfully!' : 'Video updated successfully!')),
     );
   }
 

@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
+import 'screens/recipe/recipe_details_screen.dart';
 import 'package:project2/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'screens/auth/splash_screen.dart';
@@ -76,10 +79,13 @@ class MainWrapper extends StatefulWidget {
 
 class _MainWrapperState extends State<MainWrapper> {
   int _currentIndex = 0;
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
 
   @override
   void initState() {
     super.initState();
+    _initDeepLinks();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final homeVm = context.read<HomeViewModel>();
       final savedVm = context.read<SavedViewModel>();
@@ -89,6 +95,50 @@ class _MainWrapperState extends State<MainWrapper> {
     });
   }
 
+  void _initDeepLinks() {
+    _appLinks = AppLinks();
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      _handleDeepLink(uri);
+    });
+  }
+
+  void _handleDeepLink(Uri uri) {
+    bool isRecipeLink = false;
+    String? recipeId;
+
+    if (uri.scheme == 'recipeapp' && uri.host == 'recipe') {
+      isRecipeLink = true;
+      recipeId = uri.pathSegments.last;
+    } else if (uri.scheme == 'https' && uri.host == 'app.recipe.co' && uri.path.startsWith('/recipe/')) {
+      isRecipeLink = true;
+      recipeId = uri.pathSegments.last;
+    }
+
+    if (isRecipeLink && recipeId != null) {
+      final homeVm = context.read<HomeViewModel>();
+      
+      try {
+        final recipe = homeVm.allRecipes.firstWhere(
+          (r) => r.id == recipeId || r.name.toLowerCase().replaceAll(' ', '_') == recipeId,
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => RecipeDetailsScreen(recipe: recipe),
+          ),
+        );
+      } catch (e) {
+        debugPrint('Recipe not found: $recipeId');
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screens = [
@@ -96,7 +146,6 @@ class _MainWrapperState extends State<MainWrapper> {
       const SavedScreen(),
       const NotificationsScreen(),
       const ProfileScreen(),
-      const ExploreRecipesScreen(),
     ];
 
     return Scaffold(
@@ -106,19 +155,19 @@ class _MainWrapperState extends State<MainWrapper> {
       ),
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _currentIndex,
-        showGap: _currentIndex != 4,
         onTap: (index) => setState(() => _currentIndex = index),
       ),
-      floatingActionButton: _currentIndex == 4
-          ? null
-          : FloatingActionButton(
-              onPressed: () {
-                setState(() => _currentIndex = 4);
-              },
-              backgroundColor: const Color(0xFF1B8A6B),
-              shape: const CircleBorder(),
-              child: const Icon(Icons.add, color: Colors.white, size: 28),
-            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ExploreRecipesScreen()),
+          );
+        },
+        backgroundColor: const Color(0xFF1B8A6B),
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, color: Colors.white, size: 28),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }

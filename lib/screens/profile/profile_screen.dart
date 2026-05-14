@@ -55,21 +55,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ListTile(
                 leading: const Icon(Icons.camera_alt, color: _primary),
                 title: const Text('Camera'),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  context
+                  await context
                       .read<ProfileViewModel>()
                       .pickImage(ImageSource.camera);
+                  final profileVm = context.read<ProfileViewModel>();
+                  if (profileVm.profileImagePath != null) {
+                    context.read<HomeViewModel>().setUser(
+                          context.read<HomeViewModel>().user.copyWith(
+                                profileImage: profileVm.profileImagePath,
+                              ),
+                        );
+                  }
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library, color: _primary),
                 title: const Text('Gallery'),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  context
+                  await context
                       .read<ProfileViewModel>()
                       .pickImage(ImageSource.gallery);
+                  final profileVm = context.read<ProfileViewModel>();
+                  if (profileVm.profileImagePath != null) {
+                    context.read<HomeViewModel>().setUser(
+                          context.read<HomeViewModel>().user.copyWith(
+                                profileImage: profileVm.profileImagePath,
+                              ),
+                        );
+                  }
                 },
               ),
             ],
@@ -159,6 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     context.read<HomeViewModel>().setUser(
                           context.read<HomeViewModel>().user.copyWith(
                                 name: nameCtrl.text.trim(),
+                                profileImage: profileVm.profileImagePath,
                               ),
                         );
                     Navigator.pop(ctx);
@@ -323,7 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: const Text('Recipe deleted'),
-                  duration: const Duration(seconds: 3),
+                  duration: const Duration(seconds: 2),
                   action: SnackBarAction(
                     label: 'UNDO',
                     textColor: const Color(0xFF1B8A6B),
@@ -680,7 +697,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: const Text('Video deleted'),
-                  duration: const Duration(seconds: 3),
+                  duration: const Duration(seconds: 2),
                   action: SnackBarAction(
                     label: 'Undo',
                     onPressed: () => vm.undoDeleteVideo(),
@@ -695,5 +712,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
-

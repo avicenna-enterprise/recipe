@@ -31,7 +31,7 @@ void showRecipeOptionsMenu(BuildContext context, RecipeModel recipe) {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     elevation: 8,
     items: [
-      _buildMenuItem(Icons.reply, 'share', () {
+      _buildMenuItem(Icons.share_outlined, 'share', () {
         Future.delayed(Duration.zero, () => showShareDialog(context, recipe));
       }),
       _buildMenuItem(Icons.star_outline, 'Rate Recipe', () {

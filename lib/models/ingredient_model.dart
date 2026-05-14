@@ -103,16 +103,33 @@ class RecipeIngredients {
 
   IngredientModel(name: 'Cumin', quantity: '1 tsp', emoji: '🌱'),
   ],
-  '15': [ // Chinese Egg Fried Rice
-  IngredientModel(name: 'Rice', quantity: '2 cups', emoji: '🍚'),
-  IngredientModel(name: 'Eggs', quantity: '3 pcs', emoji: '🥚'),
-  IngredientModel(name: 'Spring Onion', quantity: '4 pcs', emoji: '🌿'),
-    IngredientModel(name: ' Olive Oil', quantity: '2 tbsp', emoji: '🧴'),
-  IngredientModel(name: 'Garlic', quantity: '3 cloves', emoji: '🧄'),
-
-  IngredientModel(name: 'Carrots', quantity: '1 pc', emoji: '🥕'),
-  ],
-};
+    '15': [ // Chinese Egg Fried Rice
+      IngredientModel(name: 'Rice', quantity: '2 cups', emoji: '🍚'),
+      IngredientModel(name: 'Eggs', quantity: '3 pcs', emoji: '🥚'),
+      IngredientModel(name: 'Spring Onion', quantity: '4 pcs', emoji: '🌿'),
+      IngredientModel(name: ' Olive Oil', quantity: '2 tbsp', emoji: '🧴'),
+      IngredientModel(name: 'Garlic', quantity: '3 cloves', emoji: '🧄'),
+      IngredientModel(name: 'Carrots', quantity: '1 pc', emoji: '🥕'),
+    ],
+    '11': [ // Spice Roasted Chicken
+      IngredientModel(name: 'Chicken', quantity: '500g', emoji: '🍗'),
+      IngredientModel(name: 'Olive Oil', quantity: '2 tbsp', emoji: '🧴'),
+      IngredientModel(name: 'Garlic', quantity: '4 cloves', emoji: '🧄'),
+      IngredientModel(name: 'Paprika', quantity: '1 tsp', emoji: '🌶️'),
+      IngredientModel(name: 'Cumin', quantity: '1 tsp', emoji: '🌱'),
+      IngredientModel(name: 'Salt', quantity: 'to taste', emoji: '🧂'),
+      IngredientModel(name: 'Black Pepper', quantity: '1/2 tsp', emoji: '🫙'),
+    ],
+    '12': [ // Steak with Tomato
+      IngredientModel(name: 'Beef Steak', quantity: '400g', emoji: '🥩'),
+      IngredientModel(name: 'Tomatoes', quantity: '3 pcs', emoji: '🍅'),
+      IngredientModel(name: 'Butter', quantity: '2 tbsp', emoji: '🧈'),
+      IngredientModel(name: 'Garlic', quantity: '2 cloves', emoji: '🧄'),
+      IngredientModel(name: 'Rosemary', quantity: '1 sprig', emoji: '🌿'),
+      IngredientModel(name: 'Salt', quantity: 'to taste', emoji: '🧂'),
+      IngredientModel(name: 'Olive Oil', quantity: '1 tbsp', emoji: '🧴'),
+    ],
+  };
 
   static String getEmoji(String name) {
     final n = name.toLowerCase();

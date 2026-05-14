@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 
-enum FilterSortOption { newest, oldest, popularity }
+enum FilterSortOption { newest, oldest, popularity, all }
 
 class FilterSelection {
   final FilterSortOption sort;
@@ -105,6 +105,11 @@ Future<void> showRecipeFilterBottomSheet({
                     spacing: 10,
                     runSpacing: 10,
                     children: [
+                      chip(
+                        selected: sort == FilterSortOption.all,
+                        onTap: () => setState(() => sort = FilterSortOption.all),
+                        child: const Text('All'),
+                      ),
                       chip(
                         selected: sort == FilterSortOption.newest,
                         onTap: () => setState(() => sort = FilterSortOption.newest),
