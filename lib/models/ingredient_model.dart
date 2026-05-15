@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 class IngredientModel {
   final String name;

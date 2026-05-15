@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/notification_model.dart';
 import '../../viewmodels/notification_viewmodel.dart';
 import 'widgets/notification_filter_tab.dart';
 import 'widgets/notification_tile.dart';
