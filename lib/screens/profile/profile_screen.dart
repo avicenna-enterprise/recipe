@@ -9,7 +9,6 @@ import '../../models/recipe_model.dart';
 import '../../models/video_model.dart';
 import '../../utils/recipe_navigator.dart';
 import '../../utils/app_navigator.dart';
-import '../../main.dart';
 import '../auth/sign_in_screen.dart';
 import 'settings_screen.dart';
 import 'widgets/profile_stat_item.dart';
@@ -20,6 +19,7 @@ import '../recipe/add_recipe_screen.dart';
 
 import 'add_video_screen.dart';
 import 'video_player_screen.dart';
+import '../../viewmodels/settings_viewmodel.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -31,6 +31,22 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   int _selectedTab = 0;
   bool _showFullBio = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = context.read<HomeViewModel>().user;
+      context.read<ProfileViewModel>().syncWithUser(
+            name: user.name,
+            email: user.email,
+            username: user.username,
+            bio: user.bio,
+            gender: user.gender,
+            profileImage: user.profileImage,
+          );
+    });
+  }
 
   static const Color _primary = Color(0xFF1B8A6B);
   static const Color _textDark = Color(0xFF1A1A1A);
@@ -83,100 +99,116 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // ── Edit Profile ──────────────────────────────────────────────────────
   void _editProfile(BuildContext context, ProfileViewModel profileVm) {
     final nameCtrl = TextEditingController(text: profileVm.name);
+    final userCtrl = TextEditingController(text: profileVm.username);
     final bioCtrl = TextEditingController(text: profileVm.bio);
+    String selectedGender = profileVm.gender;
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      useSafeArea: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (ctx) => SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 20,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
-          ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 20,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Edit Profile',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(ctx),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Edit Profile',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(ctx),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: nameCtrl,
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: userCtrl,
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: bioCtrl,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      labelText: 'Bio',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: selectedGender,
+                    decoration: InputDecoration(
+                      labelText: 'Gender',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    items: ['Male', 'Female', 'Other', 'Rather not say']
+                        .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                        .toList(),
+                    onChanged: (v) {
+                      if (v != null) setDialogState(() => selectedGender = v);
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        profileVm.updateProfile(
+                          name: nameCtrl.text,
+                          username: userCtrl.text,
+                          bio: bioCtrl.text,
+                          gender: selectedGender,
+                        );
+                        
+                        // Sync with HomeViewModel
+                        final homeVm = context.read<HomeViewModel>();
+                        homeVm.setUser(homeVm.user.copyWith(
+                          name: nameCtrl.text.trim(),
+                          username: userCtrl.text.trim(),
+                          bio: bioCtrl.text.trim(),
+                          gender: selectedGender,
+                        ));
+                        
+                        Navigator.pop(ctx);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _primary,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      child: const Text('Save Changes', style: TextStyle(color: Colors.white)),
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: nameCtrl,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        const BorderSide(color: Color(0xFF1B8A6B)),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: bioCtrl,
-                maxLines: 3,
-                textInputAction: TextInputAction.done,
-                decoration: InputDecoration(
-                  labelText: 'Bio',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        const BorderSide(color: Color(0xFF1B8A6B)),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    profileVm.updateProfile(
-                      name: nameCtrl.text,
-                      bio: bioCtrl.text,
-                    );
-                    context.read<HomeViewModel>().setUser(
-                          context.read<HomeViewModel>().user.copyWith(
-                                name: nameCtrl.text.trim(),
-                              ),
-                        );
-                    Navigator.pop(ctx);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1B8A6B),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                  child: const Text('Save',
-                      style: TextStyle(color: Colors.white)),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
         ),
       ),
     );
@@ -247,20 +279,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.video_call_outlined,
-                    color: Color(0xFF1B8A6B)),
-                title: const Text('Add New Video'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AddVideoScreen(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
                 leading: const Icon(Icons.edit_outlined,
                     color: Color(0xFF1B8A6B)),
                 title: const Text('Edit Profile'),
@@ -321,10 +339,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               vm.deleteRecipe(recipe.id);
               Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).clearSnackBars();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: const Text('Recipe deleted'),
-                  duration: const Duration(seconds: 3),
+                  duration: const Duration(seconds: 2),
                   action: SnackBarAction(
                     label: 'UNDO',
                     textColor: const Color(0xFF1B8A6B),
@@ -347,11 +366,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final vm = context.watch<HomeViewModel>();
     final profileVm = context.watch<ProfileViewModel>();
     final savedVm = context.watch<SavedViewModel>();
+    final settingsVm = context.watch<SettingsViewModel>();
     final recipes = vm.userRecipes;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
+    return Material(
+      color: Colors.white,
+      child: SafeArea(
         child: CustomScrollView(
           slivers: [
             // ── AppBar ─────────────────────────────────────────────
@@ -361,9 +381,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const SizedBox(width: 40),
-                    const Text('Profile',
-                        style: TextStyle(
+                    Text(profileVm.username.isNotEmpty ? '@${profileVm.username}' : '@chef',
+                        style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: _textDark)),
@@ -430,19 +449,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(width: 20),
 
-                    // Stats
                     Expanded(
-                      child: Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceEvenly,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ProfileStatItem(
-                              label: 'Recipe',
-                              value: '${recipes.length}'),
-                          ProfileStatItem(
-                              label: 'Followers', value: '2.5M'),
-                          ProfileStatItem(
-                              label: 'Following', value: '259'),
+                          Text(
+                            profileVm.name.isNotEmpty ? profileVm.name : vm.user.name,
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: _textDark),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ProfileStatItem(
+                                  label: 'Recipe',
+                                  value: '${recipes.length}'),
+                              ProfileStatItem(
+                                  label: 'Followers', value: '2.5M'),
+                              ProfileStatItem(
+                                  label: 'Following', value: '259'),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -459,38 +489,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      profileVm.name.isNotEmpty
-                          ? profileVm.name
-                          : vm.user.name,
-                      style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: _textDark),
-                    ),
-                    const SizedBox(height: 2),
-                    const Text('Chef',
-                        style: TextStyle(
-                            fontSize: 13, color: _textGrey)),
-                    const SizedBox(height: 8),
-                    Text(
-                      _showFullBio
-                          ? profileVm.bio
-                          : profileVm.bio.split('\n').first,
+                      profileVm.bio.isNotEmpty ? profileVm.bio : 'No bio added yet.',
                       style: const TextStyle(
                           fontSize: 13,
                           color: _textDark,
                           height: 1.5),
-                    ),
-                    GestureDetector(
-                      onTap: () => setState(
-                          () => _showFullBio = !_showFullBio),
-                      child: Text(
-                        _showFullBio ? 'Less...' : 'More...',
-                        style: const TextStyle(
-                            fontSize: 13,
-                            color: _primary,
-                            fontWeight: FontWeight.w500),
-                      ),
                     ),
                   ],
                 ),
@@ -537,11 +540,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Icon(Icons.restaurant_menu,
                                   size: 60, color: Color(0xFFEEEEEE)),
                               SizedBox(height: 16),
-                              Text(
+                              const Text(
                                 'No recipe yet',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -594,11 +597,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     )
             else if (_selectedTab == 1)
               vm.userVideos.isEmpty
-                  ? const SliverToBoxAdapter(
+                  ? SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.all(40),
+                        padding: const EdgeInsets.all(40),
                         child: Center(
-                          child: Text('No videos yet',
+                          child: const Text('No videos yet',
                               style: TextStyle(
                                   color: _textGrey, fontSize: 15)),
                         ),
@@ -645,11 +648,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     )
             else
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.all(40),
+                  padding: const EdgeInsets.all(40),
                   child: Center(
-                    child: Text('No tags yet',
+                    child: const Text('No tags yet',
                         style: TextStyle(
                             color: _textGrey, fontSize: 15)),
                   ),
@@ -678,10 +681,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               vm.deleteVideo(video.id);
               Navigator.pop(context);
+              ScaffoldMessenger.of(context).clearSnackBars();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: const Text('Video deleted'),
-                  duration: const Duration(seconds: 3),
+                  duration: const Duration(seconds: 2),
                   action: SnackBarAction(
                     label: 'Undo',
                     onPressed: () => vm.undoDeleteVideo(),

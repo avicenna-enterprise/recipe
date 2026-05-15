@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import '../../../models/recipe_model.dart';
 import '../../../utils/app_colors.dart';
+import '../../../viewmodels/home_viewmodel.dart';
+import '../../../viewmodels/reviews_viewmodel.dart';
 
-void showRateDialog(BuildContext context) {
+void showRateDialog(BuildContext context, String recipeId) {
   showDialog(
     context: context,
     builder: (context) {
@@ -47,6 +50,8 @@ void showRateDialog(BuildContext context) {
                   GestureDetector(
                     onTap: rating > 0
                         ? () {
+                            context.read<HomeViewModel>().updateRecipeRating(recipeId, rating.toDouble());
+                            context.read<ReviewsViewModel>().addComment(recipeId, 'I rated this recipe $rating stars!', rating: rating);
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(

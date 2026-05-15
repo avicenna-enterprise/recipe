@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../models/ingredient_model.dart';
 import '../../../utils/app_colors.dart';
@@ -27,10 +28,24 @@ class IngredientTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
-              child: Text(
-                ingredient.emoji,
-                style: const TextStyle(fontSize: 26),
-              ),
+              child: ingredient.image != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.file(
+                        File(ingredient.image!),
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Text(
+                          ingredient.emoji,
+                          style: const TextStyle(fontSize: 26),
+                        ),
+                      ),
+                    )
+                  : Text(
+                      ingredient.emoji,
+                      style: const TextStyle(fontSize: 26),
+                    ),
             ),
           ),
           const SizedBox(width: 14),

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/saved_viewmodel.dart';
@@ -18,9 +19,9 @@ class SavedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<SavedViewModel>();
 
-    return Scaffold(
-      backgroundColor: _white,
-      body: SafeArea(
+    return Material(
+      color: _white,
+      child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -102,12 +103,21 @@ class SavedScreen extends StatelessWidget {
             // image
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                r.image,
-                width: 70,
-                height: 70,
-                fit: BoxFit.cover,
-              ),
+              child: r.image.startsWith('assets/')
+                  ? Image.asset(
+                      r.image,
+                      width: 70,
+                      height: 70,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => _recipeError(),
+                    )
+                  : Image.file(
+                      File(r.image),
+                      width: 70,
+                      height: 70,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => _recipeError(),
+                    ),
             ),
             const SizedBox(width: 14),
 
@@ -172,6 +182,19 @@ class SavedScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _recipeError() {
+    return Container(
+      width: 70,
+      height: 70,
+      color: _cardBg,
+      alignment: Alignment.center,
+      child: const Icon(
+        Icons.image_not_supported,
+        color: _textGrey,
       ),
     );
   }

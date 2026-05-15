@@ -4,12 +4,18 @@ class UserModel {
   final String name;
   final String email;
   final String profileImage;
+  final String username;
+  final String bio;
+  final String gender;
 
   UserModel({
     required this.id,
     required this.name,
     required this.email,
     this.profileImage = '',
+    this.username = '',
+    this.bio = '',
+    this.gender = '',
   });
 
 
@@ -21,12 +27,18 @@ class UserModel {
     String? name,
     String? email,
     String? profileImage,
+    String? username,
+    String? bio,
+    String? gender,
   }) {
     return UserModel(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       profileImage: profileImage ?? this.profileImage,
+      username: username ?? this.username,
+      bio: bio ?? this.bio,
+      gender: gender ?? this.gender,
     );
   }
 }

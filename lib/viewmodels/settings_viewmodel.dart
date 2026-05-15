@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/translations.dart';
 
 class SettingsViewModel extends ChangeNotifier {
   bool _pushNotificationsEnabled = true;
@@ -10,6 +11,8 @@ class SettingsViewModel extends ChangeNotifier {
   bool get emailNotificationsEnabled => _emailNotificationsEnabled;
   bool get privateAccount => _privateAccount;
   String get language => _language;
+
+  String translate(String key) => AppTranslations.translate(key, _language);
 
   void togglePushNotifications() {
     _pushNotificationsEnabled = !_pushNotificationsEnabled;

@@ -17,9 +17,9 @@ const HomeScreen({super.key});
 Widget build(BuildContext context) {
 final vm = context.watch<HomeViewModel>();
 
-return Scaffold(
-backgroundColor: AppColors.background,
-body: SafeArea(
+return Material(
+color: AppColors.background,
+child: SafeArea(
 child: SingleChildScrollView(
 padding: const EdgeInsets.symmetric(horizontal: 20),
 child: Column(

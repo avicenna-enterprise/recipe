@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/recipe_model.dart';
 import '../models/user_model.dart';
+import '../models/video_model.dart';
 import 'saved_viewmodel.dart';
 
 class HomeViewModel extends ChangeNotifier {
@@ -177,7 +178,6 @@ class HomeViewModel extends ChangeNotifier {
       videoUrl: 'https://youtube.com/shorts/ZjEL_bLSRlY?si=ligzEaIU4Rq1DqOd',
     ),
   ];
-  final List<RecipeModel> _newRecipes = [];
 
   // ── user videos ───────────────────────────────────────────────────────────
   final List<VideoModel> _userVideos = [];
@@ -297,7 +297,7 @@ class HomeViewModel extends ChangeNotifier {
 
   List<RecipeModel> get userRecipes {
     // Return only recipes authored by the current user
-    return allRecipes.where((r) => r.author.contains(_user.name)).toList();
+    return allRecipes.where((r) => r.author == _user.name).toList();
   }
 
   void deleteRecipe(String recipeId) {

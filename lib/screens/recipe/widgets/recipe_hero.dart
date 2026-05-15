@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/recipe_model.dart';
 import '../../../utils/app_colors.dart';
 import '../../../viewmodels/home_viewmodel.dart';
 import '../../../viewmodels/saved_viewmodel.dart';
+import '../reviews_screen.dart';
 
 class RecipeHero extends StatelessWidget {
   final RecipeModel recipe;
@@ -48,18 +50,23 @@ class RecipeHero extends StatelessWidget {
               // The Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  recipe.image,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    height: 200,
-                    color: AppColors.primary.withValues(alpha: 0.1),
-                    child: const Icon(Icons.restaurant,
-                        color: AppColors.primary, size: 60),
-                  ),
-                ),
+                child: recipe.image.startsWith('assets/')
+                    ? Image.asset(
+                        recipe.image,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            _buildErrorImage(),
+                      )
+                    : Image.file(
+                        File(recipe.image),
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            _buildErrorImage(),
+                      ),
               ),
 
               // Subtle gradient overlay for readability
@@ -84,28 +91,38 @@ class RecipeHero extends StatelessWidget {
               Positioned(
                 top: 10,
                 right: 10,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFE1B3),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.star,
-                          color: Color(0xFFF5A623), size: 12),
-                      const SizedBox(width: 4),
-                      Text(
-                        recipe.rating.toStringAsFixed(1),
-                        style: const TextStyle(
-                          color: AppColors.textDark,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReviewsScreen(recipeId: recipe.id),
                       ),
-                    ],
+                    );
+                  },
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFE1B3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.star,
+                            color: Color(0xFFF5A623), size: 12),
+                        const SizedBox(width: 4),
+                        Text(
+                          recipe.rating.toStringAsFixed(1),
+                          style: const TextStyle(
+                            color: AppColors.textDark,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -174,6 +191,15 @@ class RecipeHero extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildErrorImage() {
+    return Container(
+      height: 200,
+      width: double.infinity,
+      color: AppColors.primary.withValues(alpha: 0.1),
+      child: const Icon(Icons.restaurant, color: AppColors.primary, size: 60),
     );
   }
 }

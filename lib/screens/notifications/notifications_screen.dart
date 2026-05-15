@@ -51,9 +51,9 @@ class _NotificationsBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<NotificationViewModel>();
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
+    return Material(
+      color: Colors.white,
+      child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -226,7 +226,7 @@ class _NotificationsBody extends StatelessWidget {
                                           content: const Text(
                                               'Notification deleted'),
                                           duration:
-                                              const Duration(seconds: 4),
+                                              const Duration(seconds: 2),
                                           action: SnackBarAction(
                                             label: 'UNDO',
                                             textColor: const Color(

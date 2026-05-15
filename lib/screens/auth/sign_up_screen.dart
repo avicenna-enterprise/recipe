@@ -8,6 +8,7 @@ import '../../widgets/social_buttons.dart';
 import '../../utils/app_navigator.dart';
 import '../../main.dart';
 import 'sign_in_screen.dart';
+import 'complete_profile_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -66,7 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
       ));
-      AppNavigator.pushAndRemoveAll(context, const MainWrapper());
+      AppNavigator.pushAndRemoveAll(context, const CompleteProfileScreen());
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

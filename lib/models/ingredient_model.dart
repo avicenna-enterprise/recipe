@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class IngredientModel {
   final String name;
   final String quantity;
-  final String emoji; // emoji as icon
+  final String emoji;
+  final String? image;
 
   const IngredientModel({
     required this.name,
     required this.quantity,
     required this.emoji,
+    this.image,
   });
 }
 
@@ -113,6 +115,70 @@ class RecipeIngredients {
   IngredientModel(name: 'Carrots', quantity: '1 pc', emoji: '🥕'),
   ],
 };
+
+  static String getEmoji(String name) {
+    final n = name.toLowerCase();
+    if (n.contains('chicken')) return '🍗';
+    if (n.contains('beef') || n.contains('meat') || n.contains('lamb') || n.contains('steak')) return '🥩';
+    if (n.contains('rice') || n.contains('pulao')) return '🍚';
+    if (n.contains('onion')) return '🧅';
+    if (n.contains('tomato') || n.contains('ketchup') || n.contains('sauce')) return '🍅';
+    if (n.contains('garlic')) return '🧄';
+    if (n.contains('egg')) return '🥚';
+    if (n.contains('milk') || n.contains('cream') || n.contains('yogurt') || n.contains('butter')) return '🥛';
+    if (n.contains('cheese') || n.contains('parmesan')) return '🧀';
+    if (n.contains('oil')) return '🧴';
+    if (n.contains('spice') || n.contains('chili') || n.contains('pepper') || n.contains('ginger')) return '🌶️';
+    if (n.contains('salt') || n.contains('powder') || n.contains('flour')) return '🧂';
+    if (n.contains('sugar') || n.contains('sweet') || n.contains('honey') || n.contains('syrup')) return '🍯';
+    if (n.contains('lemon') || n.contains('lime')) return '🍋';
+    if (n.contains('mushroom')) return '🍄';
+    if (n.contains('tofu') || n.contains('paneer')) return '🟨';
+    if (n.contains('noodle') || n.contains('pasta') || n.contains('spaghetti') || n.contains('chow mein')) return '🍝';
+    if (n.contains('broth') || n.contains('soup')) return '🍲';
+    if (n.contains('carrot')) return '🥕';
+    if (n.contains('cucumber')) return '🥒';
+    if (n.contains('nut') || n.contains('walnut') || n.contains('almond')) return '🌰';
+    if (n.contains('ribs') || n.contains('chops')) return '🍖';
+    if (n.contains('bread') || n.contains('bun') || n.contains('roti')) return '🍞';
+    if (n.contains('fish') || n.contains('seafood') || n.contains('shrimp')) return '🐟';
+    if (n.contains('fruit') || n.contains('apple') || n.contains('mango')) return '🍎';
+    if (n.contains('basil') || n.contains('mint') || n.contains('herb') || n.contains('rosemary') || n.contains('spring onion') || n.contains('cabbage') || n.contains('lettuce') || n.contains('green')) return '🌿';
+    return '🍴';
+  }
+
+  static List<IngredientModel> getSuggestions(String recipeName) {
+    final n = recipeName.toLowerCase();
+    if (n.contains('chicken')) {
+      return [
+        IngredientModel(name: 'Chicken', quantity: '500g', emoji: '🍗'),
+        IngredientModel(name: 'Garlic', quantity: '3 cloves', emoji: '🧄'),
+        IngredientModel(name: 'Olive Oil', quantity: '2 tbsp', emoji: '🧴'),
+      ];
+    }
+    if (n.contains('biryani') || n.contains('rice')) {
+      return [
+        IngredientModel(name: 'Rice', quantity: '2 cups', emoji: '🍚'),
+        IngredientModel(name: 'Onion', quantity: '2 pcs', emoji: '🧅'),
+        IngredientModel(name: 'Spices', quantity: '2 tbsp', emoji: '🌶️'),
+      ];
+    }
+    if (n.contains('pasta') || n.contains('spaghetti')) {
+      return [
+        IngredientModel(name: 'Pasta', quantity: '200g', emoji: '🍝'),
+        IngredientModel(name: 'Tomato Sauce', quantity: '300ml', emoji: '🍅'),
+        IngredientModel(name: 'Parmesan', quantity: '50g', emoji: '🧀'),
+      ];
+    }
+    if (n.contains('salad')) {
+      return [
+        IngredientModel(name: 'Tomatoes', quantity: '2 pcs', emoji: '🍅'),
+        IngredientModel(name: 'Cucumber', quantity: '1 pc', emoji: '🥒'),
+        IngredientModel(name: 'Lettuce', quantity: '1 head', emoji: '🌿'),
+      ];
+    }
+    return [];
+  }
 
 static List<IngredientModel> getFor(String recipeId) {
 return data[recipeId] ?? [

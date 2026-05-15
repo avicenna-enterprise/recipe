@@ -1,11 +1,9 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../models/ingredient_model.dart';
 import '../../models/recipe_model.dart';
 import '../../viewmodels/recipe_detail_viewmodel.dart';
-import '../../viewmodels/saved_viewmodel.dart';
-import '../../viewmodels/home_viewmodel.dart';
 import '../../viewmodels/notification_viewmodel.dart';
 import '../../utils/app_colors.dart';
 import 'reviews_screen.dart';
@@ -79,14 +77,6 @@ class _RecipeDetailsBody extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '(${recipe.reviewCount ~/ 1000}k Reviews)',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: AppColors.textGrey,
-                        ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -103,9 +93,9 @@ class _RecipeDetailsBody extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
+                          color: Colors.red.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.red.withOpacity(0.3)),
+                          border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -161,134 +151,6 @@ class _RecipeDetailsBody extends StatelessWidget {
                 ),
               ),
             ),
-        ],
-      ),
-    );
-  }
-
-  Widget _errorImage() {
-    return Container(
-      height: 260,
-      color: const Color(0xFF2D6A4F),
-      child: const Icon(Icons.restaurant, color: Colors.white54, size: 60),
-    );
-  }
-  Widget _authorError() {
-    return Container(
-      width: 42,
-      height: 42,
-      color: AppColors.cardBg,
-      child: const Icon(Icons.person, color: AppColors.textGrey),
-    );
-  }
-}
-
-// ── Ingredient Tile ──────────────────────────────────────────────────────
-class _IngredientTile extends StatelessWidget {
-  final IngredientModel ingredient;
-
-  const _IngredientTile({required this.ingredient});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        children: [
-          // Emoji icon
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Text(
-                ingredient.emoji,
-                style: const TextStyle(fontSize: 26),
-              ),
-            ),
-          ),
-          const SizedBox(width: 14),
-          // Name
-          Expanded(
-            child: Text(
-              ingredient.name,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textDark,
-              ),
-            ),
-          ),
-          // Quantity
-          Text(
-            ingredient.quantity,
-            style: const TextStyle(
-              fontSize: 13,
-              color: AppColors.textGrey,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Step Tile ────────────────────────────────────────────────────────────
-class _StepTile extends StatelessWidget {
-  final int step;
-  final String text;
-
-  const _StepTile({required this.step, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 30,
-            height: 30,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                '$step',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: 14,
-                color: AppColors.textDark,
-                height: 1.4,
-              ),
-            ),
-          ),
         ],
       ),
     );

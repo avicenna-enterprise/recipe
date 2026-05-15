@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../models/recipe_model.dart';
 import '../../../utils/recipe_navigator.dart';
@@ -16,16 +17,17 @@ class ExploreRecipeCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Background image
-            Image.asset(
-              recipe.image,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                color: const Color(0xFF2D6A4F),
-                child: const Icon(Icons.restaurant,
-                    color: Colors.white54, size: 40),
-              ),
-            ),
+            recipe.image.startsWith('assets/')
+                ? Image.asset(
+                    recipe.image,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _buildErrorImage(),
+                  )
+                : Image.file(
+                    File(recipe.image),
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _buildErrorImage(),
+                  ),
 
             // Dark gradient overlay
             Container(
@@ -106,6 +108,13 @@ class ExploreRecipeCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildErrorImage() {
+    return Container(
+      color: const Color(0xFF2D6A4F),
+      child: const Icon(Icons.restaurant, color: Colors.white54, size: 40),
     );
   }
 }

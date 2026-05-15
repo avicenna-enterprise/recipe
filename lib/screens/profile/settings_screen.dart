@@ -23,9 +23,9 @@ class SettingsScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: _textDark),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Settings',
-          style: TextStyle(
+        title: Text(
+          vm.translate('settings'),
+          style: const TextStyle(
               color: _textDark,
               fontWeight: FontWeight.bold,
               fontSize: 18),
@@ -34,13 +34,13 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         children: [
           // ── Notifications ──────────────────────────────────────────
-          SettingsSectionHeader(title: 'Notifications'),
+          SettingsSectionHeader(title: vm.translate('notifications')),
           SwitchListTile(
             secondary: const Icon(Icons.notifications_outlined,
                 color: _primary),
-            title: const Text('Push Notifications'),
+            title: Text(vm.translate('push_notif')),
             subtitle: Text(
-              vm.pushNotificationsEnabled ? 'Enabled' : 'Disabled',
+              vm.pushNotificationsEnabled ? vm.translate('enabled') : vm.translate('disabled'),
               style: TextStyle(
                   color: vm.pushNotificationsEnabled
                       ? _primary
@@ -54,9 +54,9 @@ class SettingsScreen extends StatelessWidget {
           SwitchListTile(
             secondary:
                 const Icon(Icons.email_outlined, color: _primary),
-            title: const Text('Email Notifications'),
+            title: Text(vm.translate('email_notif')),
             subtitle: Text(
-              vm.emailNotificationsEnabled ? 'Enabled' : 'Disabled',
+              vm.emailNotificationsEnabled ? vm.translate('enabled') : vm.translate('disabled'),
               style: TextStyle(
                   color: vm.emailNotificationsEnabled
                       ? _primary
@@ -70,11 +70,11 @@ class SettingsScreen extends StatelessWidget {
           const Divider(height: 1, indent: 16, endIndent: 16),
 
           // ── Privacy ────────────────────────────────────────────────
-          SettingsSectionHeader(title: 'Privacy'),
+          SettingsSectionHeader(title: vm.translate('privacy')),
           SwitchListTile(
             secondary:
                 const Icon(Icons.lock_outline, color: _primary),
-            title: const Text('Private Account'),
+            title: Text(vm.translate('private_acc')),
             subtitle: Text(
               vm.privateAccount
                   ? 'Only followers can see your recipes'
@@ -89,9 +89,9 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.visibility_outlined,
                 color: _primary),
-            title: const Text('Profile Visibility'),
+            title: Text(vm.translate('profile_vis')),
             subtitle: Text(
-              vm.privateAccount ? 'Private' : 'Public',
+              vm.privateAccount ? vm.translate('private') : vm.translate('public'),
               style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
             trailing: const Icon(Icons.chevron_right,
@@ -100,31 +100,13 @@ class SettingsScreen extends StatelessWidget {
           ),
           const Divider(height: 1, indent: 16, endIndent: 16),
 
-          // ── Language ───────────────────────────────────────────────
-          SettingsSectionHeader(title: 'Language'),
-          ListTile(
-            leading:
-                const Icon(Icons.language, color: _primary),
-            title: const Text('App Language'),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(vm.language,
-                    style: const TextStyle(
-                        color: Colors.grey, fontSize: 14)),
-                const SizedBox(width: 4),
-                const Icon(Icons.chevron_right, color: Colors.grey),
-              ],
-            ),
-            onTap: () => _showLanguagePicker(context, vm),
-          ),
           const Divider(height: 1, indent: 16, endIndent: 16),
 
           // ── Help & Support ─────────────────────────────────────────
-          SettingsSectionHeader(title: 'Help & Support'),
+          SettingsSectionHeader(title: vm.translate('help_support')),
           ListTile(
             leading: const Icon(Icons.help_outline, color: _primary),
-            title: const Text('FAQ'),
+            title: Text(vm.translate('faq')),
             trailing: const Icon(Icons.chevron_right,
                 color: Colors.grey),
             onTap: () => _showFAQ(context),
@@ -132,7 +114,7 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.contact_support_outlined,
                 color: _primary),
-            title: const Text('Contact Us'),
+            title: Text(vm.translate('contact_us')),
             subtitle: const Text('support@recipeapp.com',
                 style: TextStyle(fontSize: 12, color: Colors.grey)),
             trailing: const Icon(Icons.chevron_right,
@@ -141,7 +123,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.info_outline, color: _primary),
-            title: const Text('About App'),
+            title: Text(vm.translate('about')),
             subtitle: const Text('Version 1.0.0',
                 style: TextStyle(fontSize: 12, color: Colors.grey)),
             trailing: const Icon(Icons.chevron_right,
@@ -194,51 +176,6 @@ class SettingsScreen extends StatelessWidget {
                 if (!vm.privateAccount) vm.togglePrivacy();
                 Navigator.pop(context);
               },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ── Language picker ───────────────────────────────────────────────────
-  void _showLanguagePicker(
-      BuildContext context, SettingsViewModel vm) {
-    const languages = [
-      'English',
-      'Urdu',
-      'Arabic',
-      'French',
-      'Spanish',
-      'Chinese',
-    ];
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text('Select Language',
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold)),
-            ),
-            ...languages.map(
-              (lang) => ListTile(
-                title: Text(lang),
-                trailing: vm.language == lang
-                    ? const Icon(Icons.check,
-                        color: Color(0xFF1B8A6B))
-                    : null,
-                onTap: () {
-                  vm.setLanguage(lang);
-                  Navigator.pop(context);
-                },
-              ),
             ),
           ],
         ),

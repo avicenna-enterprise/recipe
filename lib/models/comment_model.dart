@@ -4,6 +4,7 @@ class CommentModel {
   final String userImage;
   final String date;
   final String text;
+  final int? rating;
   int likes;
   int dislikes;
 
@@ -13,6 +14,7 @@ class CommentModel {
     required this.userImage,
     required this.date,
     required this.text,
+    this.rating,
     this.likes = 0,
     this.dislikes = 0,
   });

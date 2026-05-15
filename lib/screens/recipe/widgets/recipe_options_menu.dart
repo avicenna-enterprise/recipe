@@ -4,6 +4,7 @@ import '../../../models/recipe_model.dart';
 import '../../../utils/app_colors.dart';
 import '../../../viewmodels/home_viewmodel.dart';
 import '../../../viewmodels/saved_viewmodel.dart';
+import '../reviews_screen.dart';
 import 'recipe_details_dialogs.dart';
 
 void showRecipeOptionsMenu(BuildContext context, RecipeModel recipe) {
@@ -35,10 +36,17 @@ void showRecipeOptionsMenu(BuildContext context, RecipeModel recipe) {
         Future.delayed(Duration.zero, () => showShareDialog(context, recipe));
       }),
       _buildMenuItem(Icons.star_outline, 'Rate Recipe', () {
-        Future.delayed(Duration.zero, () => showRateDialog(context));
+        Future.delayed(Duration.zero, () => showRateDialog(context, recipe.id));
       }),
       _buildMenuItem(Icons.chat_bubble_outline, 'Review', () {
-        // Review logic
+        Future.delayed(Duration.zero, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ReviewsScreen(recipeId: recipe.id),
+            ),
+          );
+        });
       }),
       _buildMenuItem(isSaved ? Icons.bookmark : Icons.bookmark_border,
           isSaved ? 'Unsave' : 'Save', () {

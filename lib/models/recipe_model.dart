@@ -1,3 +1,5 @@
+import 'ingredient_model.dart';
+
 class RecipeModel {
   final String id;
   final String name;

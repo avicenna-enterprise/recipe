@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/recipe_model.dart';
@@ -16,18 +17,23 @@ class AuthorInfo extends StatelessWidget {
     return Row(
       children: [
         ClipOval(
-          child: Image.asset(
-            recipe.authorImage,
-            width: 42,
-            height: 42,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              width: 42,
-              height: 42,
-              color: AppColors.cardBg,
-              child: const Icon(Icons.person, color: AppColors.textGrey),
-            ),
-          ),
+          child: recipe.authorImage.startsWith('assets/')
+              ? Image.asset(
+                  recipe.authorImage,
+                  width: 42,
+                  height: 42,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      _buildErrorIcon(),
+                )
+              : Image.file(
+                  File(recipe.authorImage),
+                  width: 42,
+                  height: 42,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      _buildErrorIcon(),
+                ),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -78,6 +84,15 @@ class AuthorInfo extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildErrorIcon() {
+    return Container(
+      width: 42,
+      height: 42,
+      color: AppColors.cardBg,
+      child: const Icon(Icons.person, color: AppColors.textGrey),
     );
   }
 }

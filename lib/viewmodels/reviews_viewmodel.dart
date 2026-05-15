@@ -9,7 +9,7 @@ class ReviewsViewModel extends ChangeNotifier {
     return _commentsMap[recipeId] ?? [];
   }
 
-  void addComment(String recipeId, String text, {double? rating}) {
+  void addComment(String recipeId, String text, {int? rating}) {
     if (text.trim().isEmpty) return;
     
     if (!_commentsMap.containsKey(recipeId)) {
@@ -22,6 +22,7 @@ class ReviewsViewModel extends ChangeNotifier {
       userImage: 'assets/user_placeholder.png',
       date: 'Just now',
       text: text.trim(),
+      rating: rating,
     ));
     
     notifyListeners();

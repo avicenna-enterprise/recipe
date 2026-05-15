@@ -222,13 +222,29 @@ class _CommentItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      comment.userName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: AppColors.textDark,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          comment.userName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: AppColors.textDark,
+                          ),
+                        ),
+                        if (comment.rating != null) ...[
+                          const SizedBox(width: 8),
+                          Row(
+                            children: List.generate(5, (i) {
+                              return Icon(
+                                i < comment.rating! ? Icons.star : Icons.star_border,
+                                color: const Color(0xFFF5A623),
+                                size: 12,
+                              );
+                            }),
+                          ),
+                        ],
+                      ],
                     ),
                     Text(
                       comment.date,

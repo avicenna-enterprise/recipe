@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../models/recipe_model.dart';
 import '../../../utils/app_colors.dart';
@@ -36,22 +37,21 @@ class FeaturedCard extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 10),
                   alignment: Alignment.center,
                   child: ClipOval(
-                    child: Image.asset(
-                      recipe.image,
-                      width: 96,
-                      height: 96,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        width: 96,
-                        height: 96,
-                        alignment: Alignment.center,
-                        color: AppColors.cardBg,
-                        child: const Icon(
-                          Icons.image_not_supported,
-                          color: AppColors.textGrey,
-                        ),
-                      ),
-                    ),
+                    child: recipe.image.startsWith('assets/')
+                        ? Image.asset(
+                            recipe.image,
+                            width: 96,
+                            height: 96,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _buildErrorImage(),
+                          )
+                        : Image.file(
+                            File(recipe.image),
+                            width: 96,
+                            height: 96,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _buildErrorImage(),
+                          ),
                   ),
                 ),
               ),
@@ -147,6 +147,19 @@ class FeaturedCard extends StatelessWidget {
           ),
         ],
       ),
+      ),
+    );
+  }
+
+  Widget _buildErrorImage() {
+    return Container(
+      width: 96,
+      height: 96,
+      alignment: Alignment.center,
+      color: AppColors.cardBg,
+      child: const Icon(
+        Icons.image_not_supported,
+        color: AppColors.textGrey,
       ),
     );
   }
